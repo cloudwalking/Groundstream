@@ -20,6 +20,10 @@
             font-family: "Minion Pro", Arial, sans-serif;
             padding: 8px 2px 0px 2px;
             font-size: 14px;
+            border-top: 1px solid #666;
+            border-right: 1px solid #888;
+            border-bottom: 1px solid #888;
+            border-left: 1px solid #aaa;
         }
         h2 {
             margin-left: 10px;
@@ -50,21 +54,21 @@
             // get lat/lon from place
         
             var geocoder = new google.maps.Geocoder();
-            var instant;
+            var run_timeout;
             
             run(geocoder);
             
             $('#woof').keyup(function(event) {
                 console.log(event.keyCode);
                 
-                clearTimeout(instant);
+                clearTimeout(run_timeout);
                 
-                if(fetch) fetch.abort;
+                if(run_timeout) {console.log('abort!'); run_timeout.abort;}
                 
                 if(event.keyCode == 13) {
                     run(geocoder);
                 } else if(event.keyCode >= 65 && event.keyCode <= 90)  {
-                    instant = setTimeout(function(){run(geocoder)}, 500);
+                    run_timeout = setTimeout(function(){run(geocoder)}, 500);
                 }
             });
             
@@ -72,17 +76,30 @@
             
         });
         
+        function stopLoading() {
+            if(window.stop !== undefined)
+            {
+                 window.stop();
+            }
+            else if(document.execCommand !== undefined)
+            {
+                 document.execCommand("Stop", false);
+            }
+        }
+        
+        var runcount = 0;
+        
         function run(geocoder) {
-            console.log('run');
+            console.log('run '+runcount++);
 
+            $('#crunch').html('loading!');
+            
             if(geocoder) {
-                
-                $('#crunch').html('');
                 
                 geocoder.geocode({ 'address': $('#woof').val() }, function (results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
-                        var lat = results[0].geometry.location.Aa;
-                        var lon = results[0].geometry.location.Ca;
+                        var lat = results[0].geometry.location.lat();
+                        var lon = results[0].geometry.location.lng();
 
                         console.log('searching around '+lat+','+lon);
                         search(lat+','+lon);
@@ -117,6 +134,7 @@
                 data:"callback=?",
                 success:function(feed) {
                     console.log('parsing...');
+                    $('#crunch').html('');
                     /*  sample url 
                         and a function that gives back an image url
                     */
