@@ -1,20 +1,36 @@
 <html>
 <head>
+    <title>What's happening right now - Groundstream.org</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  
+    
     <style type="text/css">
         body {
-            margin: 10px;
+            margin: 0px;
             padding: 0;
             font-family: "Minion Pro", Arial, sans-serif;
+            background-color: #fff;
         }
         .img {
             float: left;
             margin: 10px;
-            width: 300px;
+            padding: 10px;
+            width: 280px;
+            border: 1px solid #ccc
+        }
+        img {
+            width: 280px;
         }
         h1 {
             margin-left: 10px;
             color: #666;
             font-size: 15px;
+            position: fixed;
+            background-color: white;
+            
+            display: block !important;
+            width: 100%;
+            padding: 10px;
+            margin-top: 0;
         }
         input {
             font-family: "Minion Pro", Arial, sans-serif;
@@ -52,6 +68,8 @@
         
         $(function() {
             // get lat/lon from place
+            if(window.location.hash)
+                $('#woof').val(window.location.hash.replace('#', ''));
         
             var geocoder = new google.maps.Geocoder();
             var run_timeout;
@@ -91,12 +109,15 @@
         
         function run(geocoder) {
             console.log('run '+runcount++);
+            
+            var searchPlace = $('#woof').val();
+            window.location.hash = searchPlace;
 
             $('#crunch').html('loading!');
             
             if(geocoder) {
                 
-                geocoder.geocode({ 'address': $('#woof').val() }, function (results, status) {
+                geocoder.geocode({ 'address': searchPlace }, function (results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
                         var lat = results[0].geometry.location.lat();
                         var lon = results[0].geometry.location.lng();
@@ -125,7 +146,7 @@
             
             place = place+','+accuracy+'mi';
         
-            var query = "http://search.twitter.com/search.json?q=twitpic OR instagr.am "+extras+"&geocode="+place+"&rpp=100";
+            var query = "http://search.twitter.com/search.json?q=twitpic OR yfrog "+extras+"&geocode="+place+"&rpp=100";
             console.log(query);
         
             fetch = $.ajax({
@@ -143,32 +164,56 @@
                             sample: "http://twitpic.com/123456", 
                             transform: function(url){ return url.replace("twitpic.com/", "twitpic.com/show/large/") }
                         },
-                        {   domain: "instagr.am",
+                    /*    {   domain: "instagr.am",
                             sample: "http://instagr.am/p/CIW2h", 
                             transform: function(url){ return url+'/media?size=m'; }
+                        },
+                    */
+                        {   domain: "yfrog.com",
+                            sample: "http://yfrog.com/h76qmypj", 
+                            transform: function(url){ return url+':medium'; }
                         }
                     ];
                 
                     var seen = [];
+                    var tweet;
+                    var service;
                 
                     for(var i=0; i<feed.results.length; i++) {
+                        tweet = feed.results[i];
+                        
                         for(var j=0; j<Services.length; j++) {
-                            var service = Services[j];
+                            service = Services[j];
                             var url, location, size, img;
                         
-                            if(feed.results[i].text.indexOf(service['domain']) > 0) {
-                                location = feed.results[i].text.indexOf("http:");
+                            if(tweet.text.indexOf(service['domain']) > 0) {
+                                location = tweet.text.indexOf("http:");
                                 size = service['sample'].length;
-                                url = feed.results[i].text.substring(location, location+size);
+                                url = tweet.text.substring(location, location+size);
                             
                                 // be sure found URL is correct
                                 if(url.indexOf(service['domain']) > 0) {
                                     img = service['transform'](url);
                                 
                                     // be sure we haven't seen this one before
+                                    // (filters out RTs)
                                     if($.inArray(img, seen) < 0) {
                                         seen.push(img);
-                                        $('#crunch').append('<div class="img"><a href="'+url+'"><img src="'+img+'"></a><br />'+service['domain']+'</div>');
+                                        
+                                        var now = new Date();
+                                        var then = new Date(tweet.created_at);
+                                        var diff = .001 * (now.getTime() - then.getTime());
+                                        
+                                        if(diff < 60)
+                                            diff = Math.round(diff) + ' seconds';
+                                        else if(diff < 120)
+                                            diff = '1 minute';
+                                        else if(diff < 60*60)
+                                            diff = Math.round(diff/60) + ' minutes';
+                                        else if(diff < 60*60*24)
+                                            diff = Math.round((diff/60)/24) + ' hours';
+                                        
+                                        $('#crunch').append('<div class="img"><a href="'+url+'"><img src="'+img+'"></a><br />'+diff+' ago</div>');
                                     }
                                 }
                             
@@ -177,11 +222,12 @@
                         }
                     }
                 
+                /*
                     var maxWidth = 300;
                     $('img').load(function() {
                         $(this).animate({width: maxWidth});
                     });
-                
+                */
                     $('img').error(function() {
                         $(this).parent().parent().css('display', 'none');
                     });
@@ -206,8 +252,9 @@
 </head>
 <body>
     <h1>
-        See what are people looking at in <input id="woof" type="text" title="Tokyo" value="Tokyo" />
-    </h1> 
+        See what are people looking at in <input id="woof" type="text" title="location" value="Tokyo" />
+    </h1>
+    <br /><br />
     <h2>
         These are the 100 most recent Twitpic images.<br />
         Refresh a few times, it's addicting.
@@ -225,7 +272,7 @@
 </body>
 <script type="text/javascript">
   var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-9995418-1']);
+  _gaq.push(['_setAccount', 'UA-22359785-1']);
   _gaq.push(['_trackPageview']);
 
   (function() {
