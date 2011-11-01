@@ -41,7 +41,7 @@
             border-right: 1px solid #888;
             border-bottom: 1px solid #888;
             border-left: 1px solid #aaa;
-            display: none;
+			display: none;
         }
         h2 {
             margin-left: 10px;
@@ -65,17 +65,17 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
     <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
     <script type="text/javascript">
+		var DEBUG = true;
         var Services = [
             {   name: "twitpic",
                 domain: "twitpic.com",
                 sample: "http://twitpic.com/123456", 
                 transform: function(url){ return url.replace("twitpic.com/", "twitpic.com/show/large/") }
             },
-        /*    {   domain: "instagr.am",
-                sample: "http://instagr.am/p/CIW2h", 
-                transform: function(url){ return url+'/media?size=m'; }
-            },
-        */
+        //    {   domain: "instagr.am",
+        //        sample: "http://instagr.am/p/CIW2h", 
+        //        transform: function(url){ return url+'/media?size=m'; }
+        //    },
             {   name: "yfrog",
                 domain: "yfrog.com",
                 sample: "http://yfrog.com/h76qmypj", 
@@ -98,7 +98,7 @@
                 
                 // when a key is struck, clear the future RUN call
                 if(run_timeout) {
-                    console.log('abort!'); 
+                    if(DEBUG) console.log('abort!'); 
                     run_timeout.abort;
                 }
                 
@@ -132,7 +132,7 @@
         var runcount = 0;
         
         function run(searchPlace) {
-            console.log('run '+runcount++);
+            if(DEBUG) console.log('run '+runcount++);
             
             var geocoder = new google.maps.Geocoder();
 
@@ -147,18 +147,18 @@
                         var lat = results[0].geometry.location.lat();
                         var lon = results[0].geometry.location.lng();
 
-                        console.log('searching around '+lat+','+lon);
+                        if(DEBUG) console.log('searching around '+lat+','+lon);
                         search(lat+','+lon);
                     }
                     else {
-                        console.log("Geocoding failed: " + status);
+                        if(DEBUG) console.log("Geocoding failed: " + status);
                     }
                 });
             }
         }
         
         function search(location) {
-            console.log('waiting for response...');
+            if(DEBUG) console.log('waiting for response...');
         
             var place = location;
             var accuracy = '100';
@@ -166,20 +166,20 @@
         
             // if(getUrlVars()[0] == 'a') {
             //     accuracy = getUrlVars();
-            //     console.log('accuracy: '+accuracy);
+            //     if(DEBUG) console.log('accuracy: '+accuracy);
             // }
             
             place = place+','+accuracy+'mi';
         
             var query = "http://search.twitter.com/search.json?q=twitpic OR yfrog "+extras+"&geocode="+place+"&rpp=100";
-            console.log(query);
+            if(DEBUG) console.log(query);
         
             var fetch = $.ajax({
                 type:'GET',
                 url:query,
                 data:"callback=?",
                 success:function(feed) {
-                    console.log('parsing...');
+                    if(DEBUG) console.log('parsing...');
                     $('#crunch').html('');
                     
                     var tweets = [];
