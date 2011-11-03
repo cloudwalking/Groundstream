@@ -41,7 +41,6 @@
             border-right: 1px solid #888;
             border-bottom: 1px solid #888;
             border-left: 1px solid #aaa;
-			display: none;
         }
         h2 {
             margin-left: 10px;
@@ -67,20 +66,29 @@
     <script type="text/javascript">
 		var DEBUG = true;
         var Services = [
-            {   name: "twitpic",
+            {   
+				name: "twitpic",
                 domain: "twitpic.com",
                 sample: "http://twitpic.com/123456", 
                 transform: function(url){ return url.replace("twitpic.com/", "twitpic.com/show/large/") }
             },
-        //    {   domain: "instagr.am",
+        //    {   
+		//		  domain: "instagr.am",
         //        sample: "http://instagr.am/p/CIW2h", 
         //        transform: function(url){ return url+'/media?size=m'; }
         //    },
-            {   name: "yfrog",
+            {   
+				name: "yfrog",
                 domain: "yfrog.com",
                 sample: "http://yfrog.com/h76qmypj", 
-                transform: function(url){ return url+':medium'; }
-            }
+                transform: function(url){ return url+':medium' }
+            },
+			{
+				name: "tco",
+				domain: "t.co",
+				sample: "http://t.co/L9QFnRp9",
+				transform: function(url) { return url }
+			}
         ];
     
         $(function() {
@@ -203,11 +211,13 @@
                 for(var j=0; j<Services.length; j++) {
                     service = Services[j];
                     var url, location, size, img;
-                
+console.log(parseURL(tweet, service));
                     if(tweet.text.indexOf(service['domain']) > 0) {
-                        location = tweet.text.indexOf("http:");
-                        size = service['sample'].length;
-                        url = tweet.text.substring(location, location+size);
+                        // location = tweet.text.indexOf("http:");
+                        // size = service['sample'].length;
+                        // url = tweet.text.substring(location, location+size);
+						url = parseURL(tweet, service);
+						//if(DEBUG) console.log(parseURL(tweet, service));
                     
                         // be sure found URL is correct
                         if(url.indexOf(service['domain']) > 0) {
@@ -243,6 +253,16 @@
                 }
             }
         }
+
+		// Gets the first URL written in a tweet
+		function parseURL(tweet, service) {
+			if(tweet.text.indexOf(service['domain']) == 0) {
+				return false;
+			}
+			var location = tweet.text.indexOf("http:");
+            var size = service['sample'].length;
+            return tweet.text.substring(location, location+size);
+		}
         
         function tweetHTML(url, time) {
             return '<div class="img"><a><img onerror="javascript:imgErr(this)" src="'+url+'"></a><br />'+time+' ago</div>';
