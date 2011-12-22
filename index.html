@@ -7,7 +7,8 @@
         body {
             margin: 0px;
             padding: 0;
-            width: 320px;
+			/* Set this for mobile */
+/*            width: 320px;*/
             font-family: "Minion Pro", Arial, sans-serif;
             background-color: #d7faff;
         }
@@ -16,7 +17,7 @@
             margin: 10px;
             padding: 10px;
             width: 280px;
-            border: 1px solid #ccc
+            border: 1px solid #ccc;
         }
         img {
             width: 280px;
@@ -64,7 +65,7 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
     <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
     <script type="text/javascript">
-		var DEBUG = true;
+		var DEBUG = false;
         var Services = [
             {   
 				name: "twitpic",
@@ -80,15 +81,16 @@
             {   
 				name: "yfrog",
                 domain: "yfrog.com",
-                sample: "http://yfrog.com/h76qmypj", 
+                sample: "http://yfrog.com/12345678", 
                 transform: function(url){ return url+':medium' }
-            },
-			{
-				name: "tco",
-				domain: "t.co",
-				sample: "http://t.co/L9QFnRp9",
-				transform: function(url) { return url }
-			}
+            }
+		//	,
+		//	{
+		//		name: "tco",
+		//		domain: "t.co",
+		//		sample: "http://t.co/L9QFnRp9",
+		//		transform: function(url) { return url }
+		//	}
         ];
     
         $(function() {
@@ -103,7 +105,8 @@
             
             $('#woof').keyup(function(event) {
                 clearTimeout(run_timeout);
-                
+                searchPlace = $('#woof').val();
+
                 // when a key is struck, clear the future RUN call
                 if(run_timeout) {
                     if(DEBUG) console.log('abort!'); 
@@ -122,8 +125,10 @@
         
         // can't bind or live the error method, unfortunately. bug in safari, firefox, etc
         // http://forum.jquery.com/topic/error-event-with-live
+		// have to hack it in: <img onerror="javascript:imgErr(this)" ...
         function imgErr(thing) {
-            $(thing).parent().parent().css('display', 'none');
+			// if we're in prod, hide all broken images
+            if(!DEBUG) $(thing).parent().parent().css('display', 'none');
         }
         
         function stopLoading() {
@@ -145,6 +150,7 @@
             var geocoder = new google.maps.Geocoder();
 
             window.location.hash = searchPlace;
+			if(DEBUG) console.log(searchPlace);
 
             $('#crunch').html('loading!');
             
@@ -179,7 +185,7 @@
             
             place = place+','+accuracy+'mi';
         
-            var query = "http://search.twitter.com/search.json?q=twitpic OR yfrog "+extras+"&geocode="+place+"&rpp=100";
+            var query = "http://search.twitter.com/search.json?q=twitpic OR yfrog "+extras+"&geocode="+place+"&rpp=100&include_entities=true";
             if(DEBUG) console.log(query);
         
             var fetch = $.ajax({
@@ -202,51 +208,61 @@
         }
         
         function render(tweets) {
-            var seen = [];
+            var seen = []; // keep a list of urls we've seen so we don't repeat
             var tweet;
             var service;
+			
+			// loop all tweets
+			// don't change this to a foreach, it's done like this on purpose
             for(var i=0; i<tweets.length; i++) {
                 tweet = tweets[i];
                 
+				// loop each service
+				// don't change this to a foreach, it's done like this on purpose
                 for(var j=0; j<Services.length; j++) {
                     service = Services[j];
                     var url, location, size, img;
-console.log(parseURL(tweet, service));
-                    if(tweet.text.indexOf(service['domain']) > 0) {
-                        // location = tweet.text.indexOf("http:");
-                        // size = service['sample'].length;
-                        // url = tweet.text.substring(location, location+size);
-						url = parseURL(tweet, service);
+
+					// TODO: only works with the first url in the tweet. should work with all urls (more than one twitpic)
+					if(typeof tweet.entities.urls[0].expanded_url != 'undefined') {
+						url = tweet.entities.urls[0].expanded_url;
+					} else {
+						url = tweet.entities.urls[0].url;
+					}
+					
+					// save the url in the tweet for easyness later
+					tweet.gs_url = url;
+
+					if(url.indexOf(service['domain']) > 0) {
+                    //if(tweet.text.indexOf(service['domain']) > 0) {
+						url = tweet.entities.urls[0].expanded_url;
 						//if(DEBUG) console.log(parseURL(tweet, service));
+                
+                        img = service['transform'](url);
+						tweet.gs_thumbnail = img;
                     
-                        // be sure found URL is correct
-                        if(url.indexOf(service['domain']) > 0) {
-                            img = service['transform'](url);
-                        
-                            // be sure we haven't seen this one before
-                            // (filters out RTs)
-                            if($.inArray(img, seen) < 0) {
-                                seen.push(img);
-                                
-                                var now = new Date();
-                                var then = new Date(tweet.created_at);
-                                var diff = .001 * (now.getTime() - then.getTime());
-                                
-                                if(diff < 60)
-                                    diff = Math.round(diff) + ' seconds';
-                                else if(diff < 120)
-                                    diff = '1 minute';
-                                else if(diff < 60*60)
-                                    diff = Math.round(diff/60) + ' minutes';
-                                else if(diff < 60*60*24)
-                                    diff = Math.round((diff/60)/24) + ' hours';
-                                else
-                                    diff = Math.round(((diff/60)/24)/7) + ' days';
-                                
-                                $('#crunch').append(tweetHTML(img, diff));
-                            }
+                        // be sure we haven't seen this one before
+                        // (filters out RTs)
+                        if($.inArray(img, seen) < 0) {
+                            seen.push(img);
+                            
+                            var now = new Date();
+                            var then = new Date(tweet.created_at);
+                            var diff = .001 * (now.getTime() - then.getTime());
+                            
+                            if(diff < 60)
+                                diff = Math.round(diff) + ' seconds';
+                            else if(diff < 120)
+                                diff = '1 minute';
+                            else if(diff < 60*60)
+                                diff = Math.round(diff/60) + ' minutes';
+                            else if(diff < 60*60*24)
+                                diff = Math.round((diff/60)/24) + ' hours';
+                            else
+                                diff = Math.round(((diff/60)/24)/7) + ' days';
+                            
+                            $('#crunch').append(tweetHTML(tweet, diff));
                         }
-                    
                         // found the right service. done with this tweet.
                         break;
                     }
@@ -264,8 +280,10 @@ console.log(parseURL(tweet, service));
             return tweet.text.substring(location, location+size);
 		}
         
-        function tweetHTML(url, time) {
-            return '<div class="img"><a><img onerror="javascript:imgErr(this)" src="'+url+'"></a><br />'+time+' ago</div>';
+        function tweetHTML(tweet, time) {
+			var big_url = tweet.gs_url
+			var thumb_url = tweet.gs_thumbnail;
+            return '<div class="img"><a href="'+big_url+'"><img onerror="javascript:imgErr(this)" src="'+thumb_url+'"></a><br />'+time+' ago</div>';
         }
         
         
@@ -281,7 +299,7 @@ console.log(parseURL(tweet, service));
             }
             return vars;
         }
-    </script>
+     </script>
 </head>
 <body>
     <h1>
