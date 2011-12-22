@@ -223,6 +223,14 @@
                     service = Services[j];
                     var url, location, size, img;
 
+
+					if(DEBUG) console.log(tweet);
+
+					if(typeof tweet.entities.urls == 'undefined') {
+						// someone just said "twitpic" or somesuch, no actual url
+						break;
+					}
+					
 					// TODO: only works with the first url in the tweet. should work with all urls (more than one twitpic)
 					if(typeof tweet.entities.urls[0].expanded_url != 'undefined') {
 						url = tweet.entities.urls[0].expanded_url;
@@ -232,11 +240,7 @@
 					
 					// save the url in the tweet for easyness later
 					tweet.gs_url = url;
-
 					if(url.indexOf(service['domain']) > 0) {
-                    //if(tweet.text.indexOf(service['domain']) > 0) {
-						url = tweet.entities.urls[0].expanded_url;
-						//if(DEBUG) console.log(parseURL(tweet, service));
                 
                         img = service['transform'](url);
 						tweet.gs_thumbnail = img;
