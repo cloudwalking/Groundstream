@@ -3,252 +3,9 @@
     <title>What's happening right now - Groundstream.org</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
-    <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
-    <script type="text/javascript">
-		var DEBUG = false;
-        var Services = [
-            {   
-				name: "twitpic",
-                domain: "twitpic.com",
-                sample: "http://twitpic.com/123456", 
-                transform: function(url){ return url.replace("twitpic.com/", "twitpic.com/show/large/") }
-            },
-        //    {   
-		//		  domain: "instagr.am",
-        //        sample: "http://instagr.am/p/CIW2h", 
-        //        transform: function(url){ return url+'/media?size=m'; }
-        //    },
-            {   
-				name: "yfrog",
-                domain: "yfrog.com",
-                sample: "http://yfrog.com/12345678", 
-                transform: function(url){ return url+':medium' }
-            }
-		//	,
-		//	{
-		//		name: "tco",
-		//		domain: "t.co",
-		//		sample: "http://t.co/L9QFnRp9",
-		//		transform: function(url) { return url }
-		//	}
-        ];
-    
-        $(function() {
-            // get lat/lon from place
-            if(window.location.hash)
-                $('#woof').val(window.location.hash.replace('#', ''));
-        
-            var run_timeout; // instant search: save the httprequest so we can kill it
-            var searchPlace = $('#woof').val();
-            
-            run(searchPlace);
-            
-            $('#woof').keyup(function(event) {
-                clearTimeout(run_timeout);
-                searchPlace = $('#woof').val();
-
-                // when a key is struck, clear the future RUN call
-                if(run_timeout) {
-                    if(DEBUG) console.log('abort!'); 
-                    run_timeout.abort;
-                }
-                
-                if(event.keyCode == 13) {
-                    // return key
-                    run_timeout.abort;
-                    run(searchPlace);
-                } else if(event.keyCode >= 65 && event.keyCode <= 90)  {
-                    run_timeout = setTimeout(function(){run(searchPlace)}, 500);
-                }
-            });
-        });
-        
-        // can't bind or live the error method, unfortunately. bug in safari, firefox, etc
-        // http://forum.jquery.com/topic/error-event-with-live
-		// have to hack it in: <img onerror="javascript:imgErr(this)" ...
-        function imgErr(thing) {
-			// if we're in prod, hide all broken images
-            if(!DEBUG) $(thing).parent().parent().css('display', 'none');
-        }
-        
-        function stopLoading() {
-            if(window.stop !== undefined)
-            {
-                 window.stop();
-            }
-            else if(document.execCommand !== undefined)
-            {
-                 document.execCommand("Stop", false);
-            }
-        }
-        
-        var runcount = 0;
-        
-        function run(searchPlace) {
-            if(DEBUG) console.log('run '+runcount++);
-            
-            var geocoder = new google.maps.Geocoder();
-
-            window.location.hash = searchPlace;
-			if(DEBUG) console.log(searchPlace);
-
-            $('#crunch').html('loading!');
-            
-            if(geocoder) {
-                
-                geocoder.geocode({ 'address': searchPlace }, function (results, status) {
-                    if (status == google.maps.GeocoderStatus.OK) {
-                        var lat = results[0].geometry.location.lat();
-                        var lon = results[0].geometry.location.lng();
-
-                        if(DEBUG) console.log('searching around '+lat+','+lon);
-                        search(lat+','+lon);
-                    }
-                    else {
-                        if(DEBUG) console.log("Geocoding failed: " + status);
-                    }
-                });
-            }
-        }
-        
-        function search(location) {
-            if(DEBUG) console.log('waiting for response...');
-        
-            var place = location;
-            var accuracy = '100';
-            var extras = '';
-        
-            // if(getUrlVars()[0] == 'a') {
-            //     accuracy = getUrlVars();
-            //     if(DEBUG) console.log('accuracy: '+accuracy);
-            // }
-            
-            place = place+','+accuracy+'mi';
-        
-            var query = "http://search.twitter.com/search.json?q=twitpic OR yfrog "+extras+"&geocode="+place+"&rpp=100&include_entities=true";
-            if(DEBUG) console.log(query);
-        
-            var fetch = $.ajax({
-                type:'GET',
-                url:query,
-                data:"callback=?",
-                success:function(feed) {
-                    if(DEBUG) console.log('parsing...');
-                    $('#crunch').html('');
-                    
-                    var tweets = [];
-                    for(var i=0; i<feed.results.length; i++) {
-                        tweets.push(feed.results[i]);
-                    }
-                    
-                    render(tweets);   
-                },
-                dataType:'jsonp'
-            });
-        }
-        
-        function render(tweets) {
-            var seen = []; // keep a list of urls we've seen so we don't repeat
-            var tweet;
-            var service;
-			
-			// loop all tweets
-			// don't change this to a foreach, it's done like this on purpose
-            for(var i=0; i<tweets.length; i++) {
-                tweet = tweets[i];
-                
-				// loop each service
-				// don't change this to a foreach, it's done like this on purpose
-                for(var j=0; j<Services.length; j++) {
-                    service = Services[j];
-                    var url, location, size, img;
-
-
-					if(DEBUG) console.log(tweet);
-
-					if(typeof tweet.entities.urls == 'undefined') {
-						// someone just said "twitpic" or somesuch, no actual url
-						break;
-					}
-					
-					// TODO: only works with the first url in the tweet. should work with all urls (more than one twitpic)
-					if(typeof tweet.entities.urls[0].expanded_url != 'undefined') {
-						url = tweet.entities.urls[0].expanded_url;
-					} else {
-						url = tweet.entities.urls[0].url;
-					}
-					
-					// save the url in the tweet for easyness later
-					tweet.gs_url = url;
-					if(url.indexOf(service['domain']) > 0) {
-                
-                        img = service['transform'](url);
-						tweet.gs_thumbnail = img;
-                    
-                        // be sure we haven't seen this one before
-                        // (filters out RTs)
-                        if($.inArray(img, seen) < 0) {
-                            seen.push(img);
-                            
-                            var now = new Date();
-                            var then = new Date(tweet.created_at);
-                            var diff = .001 * (now.getTime() - then.getTime());
-                            
-                            if(diff < 60)
-                                diff = Math.round(diff) + ' seconds';
-                            else if(diff < 120)
-                                diff = '1 minute';
-                            else if(diff < 60*60)
-                                diff = Math.round(diff/60) + ' minutes';
-                            else if(diff < 60*60*24)
-                                diff = Math.round((diff/60)/24) + ' hours';
-                            else
-                                diff = Math.round(((diff/60)/24)/7) + ' days';
-                            
-                            $('#crunch').append(tweetHTML(tweet, diff));
-                        }
-                        // found the right service. done with this tweet.
-                        break;
-                    }
-                }
-            }
-        }
-
-		// Gets the first URL written in a tweet
-		function parseURL(tweet, service) {
-			if(tweet.text.indexOf(service['domain']) == 0) {
-				return false;
-			}
-			var location = tweet.text.indexOf("http:");
-            var size = service['sample'].length;
-            return tweet.text.substring(location, location+size);
-		}
-        
-        function tweetHTML(tweet, time) {
-			var big_url = tweet.gs_url
-			var thumb_url = tweet.gs_thumbnail;
-            return '<div class="img"><a href="'+big_url+'"><img onerror="javascript:imgErr(this)" src="'+thumb_url+'"></a><br />'+time+' ago</div>';
-        }
-
-		function groundstreamString(town) {
-			$('#woof').val(town);
-			run(town);
-		}
-        
-        
-        function getUrlVars()
-        {
-            var vars = [], hash;
-            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-            for(var i = 0; i < hashes.length; i++)
-            {
-                hash = hashes[i].split('=');
-                vars.push(hash[0]);
-                vars[hash[0]] = hash[1];
-            }
-            return vars;
-        }
-     </script>
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <script type="text/javascript" src="groundstream.js"></script>
+	<!--<script type="text/javascript" src="isotope.js"></script>-->
 
 	<style type="text/css">
         body {
@@ -338,6 +95,18 @@
             visibility: hidden;
         }
     </style>
+
+	<script type="text/javascript">
+		/*
+		$(function() {
+			$("#crunch").isotope({
+				itemSelector: '.img',
+				layoutMode: 'fitRows'
+			});
+		});
+		*/
+	</script>
+	
 </head>
 <body>
     <div id="top">
@@ -350,22 +119,22 @@
 		<div class="cell cell-3">
 			<ul>
 				<li>
-					<a href="#san-francisco" onClick="groundstreamString('san francisco')">san francisco</a>
+					<a href="#san-francisco" onClick="groundstream_load_town('san francisco')">san francisco</a>
 				</li>
 				<li>
-					<a href="#boise" onClick="groundstreamString('boise')">boise</a>
+					<a href="#boise" onClick="groundstream_load_town('boise')">boise</a>
 				</li>
 				<li>
-					<a href="#new-orleans" onClick="groundstreamString('new-orleans')">new orleans</a>
+					<a href="#new-orleans" onClick="groundstream_load_town('new-orleans')">new orleans</a>
 				</li>
 				<li>
-					<a href="#paris" onClick="groundstreamString('paris')">paris</a>
+					<a href="#paris" onClick="groundstream_load_town('paris')">paris</a>
 				</li>
 				<li>
-					<a href="#singapore" onClick="groundstreamString('singapore')">singapore</a>
+					<a href="#singapore" onClick="groundstream_load_town('singapore')">singapore</a>
 				</li>
 				<li>
-					<a href="#bangkok" onClick="groundstreamString('bangkok')">bangkok</a>
+					<a href="#bangkok" onClick="groundstream_load_town('bangkok')">bangkok</a>
 				</li>
 			</ul>
 		</div>
