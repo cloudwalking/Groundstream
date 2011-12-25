@@ -16,6 +16,13 @@ var Services = [
         domain: "yfrog.com",
         sample: "http://yfrog.com/12345678", 
         transform: function(url){ return url+':medium' }
+    },
+    {
+    	name: "flickr",
+    	domain: "flic.kr",
+    	sample: "http://flic.kr/p/2U89G8",
+    	// Based off of http://www.flickr.com/groups/api/discuss/72157616713786392/
+    	transform: function(url) { return url+"_z.jpg"; }
     }
 //	,
 //	{
