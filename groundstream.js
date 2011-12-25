@@ -1,40 +1,33 @@
-var DEBUG = true;
+var DEBUG = false;
 var Services = [
-    {   
-		name: "twitpic",
-        domain: "twitpic.com",
-        sample: "http://twitpic.com/123456", 
-        transform: function(url){ return url.replace("twitpic.com/", "twitpic.com/show/large/") }
-    },
-//    {   
-//		  domain: "instagr.am",
-//        sample: "http://instagr.am/p/CIW2h", 
-//        transform: function(url){ return url+'/media?size=m'; }
-//    },
-    {   
-		name: "yfrog",
-        domain: "yfrog.com",
-        sample: "http://yfrog.com/12345678", 
-        transform: function(url){ return url+':medium' }
-    },
-    {
-    	name: "flickr",
-    	domain: "flic.kr",
-    	sample: "http://flic.kr/p/2U89G8",
-    	// Based off of http://www.flickr.com/groups/api/discuss/72157616713786392/
-    	transform: function(url) {
-			n = url.lastIndexOf('/');
-			thumb_url = url.substring(0, n) + "/img" + url.substring(n) + "_m.jpg";
-			return thumb_url;
-		}
+	{   
+	name: "twitpic",
+	domain: "twitpic.com",
+	sample: "http://twitpic.com/123456", 
+	transform: function(url){ return url.replace("twitpic.com/", "twitpic.com/show/large/") }
+	},
+  {  
+    name: "instagram", 
+    domain: "instagr.am",
+    sample: "http://instagr.am/p/CIW2h/", 
+    transform: function(url){ return url+'media?size=m'; }
+  },
+  {   
+    name: "yfrog",
+    domain: "yfrog.com",
+    sample: "http://yfrog.com/12345678", 
+    transform: function(url){ return url+':medium' }
+  },
+  {
+    name: "flickr",
+    domain: "flic.kr",
+    sample: "http://flic.kr/p/2U89G8",
+    transform: function(url) {
+      n = url.lastIndexOf('/');
+      thumb_url = url.substring(0, n) + "/img" + url.substring(n) + "_m.jpg";
+      return thumb_url;
     }
-//	,
-//	{
-//		name: "tco",
-//		domain: "t.co",
-//		sample: "http://t.co/L9QFnRp9",
-//		transform: function(url) { return url }
-//	}
+  }
 ];
 
 $(function() {
