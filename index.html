@@ -1,52 +1,52 @@
 <html>
 <head>
-    <title>What's happening right now - Groundstream.org</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-    <script type="text/javascript" src="groundstream.js"></script>
-	<!--<script type="text/javascript" src="isotope.js"></script>-->
+  <title>What's happening right now - Groundstream.org</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  <script type="text/javascript" src="groundstream.js"></script>
+  <script type="text/javascript" src="masonry.min.js"></script>
 
 	<style type="text/css">
-        body {
-            margin: 0px;
-            padding: 0;
-			/* Set this for mobile */
-/*            width: 320px;*/
-            font-family: "Minion Pro", Arial, sans-serif;
-            background-color: #d7faff;
-        }
+    body {
+        margin: 0px;
+        padding: 0;
+	      /* Set this for mobile */
+/*        width: 320px;*/
+        font-family: "Minion Pro", Arial, sans-serif;
+        background-color: #d7faff;
+    }
 		body, a {
 			font-family: Helvetica, Arial, sans-serif;
             font-size: 14px;
             color: #888;
 		}
-        .img {
-            float: left;
-            margin: 10px;
-            padding: 10px;
-            width: 280px;
-            border: 1px solid #ccc;
-			line-height: 20px;
-        }
-        .img img {
-            width: 280px;
-        }
+    .img {
+        float: left;
+        margin: 10px;
+        padding: 10px;
+        width: 280px;
+        border: 1px solid #ccc;
+	      line-height: 20px;
+    }
+    .img img {
+        width: 280px;
+    }
 		#crunch {
 			margin-top: 70px;
 		}
 
 		#top {
 			margin-left: 10px;
-            color: #666;
-            font-size: 15px;
-            position: fixed;
-            background-color: #d7faff;
+      color: #666;
+      font-size: 15px;
+      position: fixed;
+      background-color: #d7faff;
 
-            display: block !important;
-            width: 100%;
-            padding: 10px 10px 0 10px;
-            margin-top: 0;
+      display: block !important;
+      width: 100%;
+      padding: 10px 10px 0 10px;
+      margin-top: 0;
 			height: 43px;
 		}
 		.cell {
@@ -62,39 +62,39 @@
 		.cell-3 {
 			width: 600px;
 		}
-        input {
-            font-family: Helvetica, Arial, sans-serif;
-            font-size: 10px;
-            color: #888;
-
-            padding: 5px 2px 3px 2px;
-            font-size: 14px;
-            border-top: 1px solid #666;
-            border-right: 1px solid #888;
-            border-bottom: 1px solid #888;
-            border-left: 1px solid #aaa;
-        }
-        h2 {
-            margin-left: 10px;
-            color: #888;
-            font-size: 16px;
-        }
-        ul {
-			list-style-type: none;
-			margin-top: 5px;
+    input {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 10px;
+      color: #888;
+      
+      padding: 5px 2px 3px 2px;
+      font-size: 14px;
+      border-top: 1px solid #666;
+      border-right: 1px solid #888;
+      border-bottom: 1px solid #888;
+      border-left: 1px solid #aaa;
+    }
+    h2 {
+      margin-left: 10px;
+      color: #888;
+      font-size: 16px;
+    }
+    ul {
+		  list-style-type: none;
+		  margin-top: 5px;
 		}
 		li {
 			display: inline;
 			margin-right: 30px;
 		}
-        .clearfix:after {
-            content: ".";
-            display: block;
-            height: 0;
-            clear: both;
-            visibility: hidden;
-        }
-    </style>
+    .clearfix:after {
+      content: ".";
+      display: block;
+      height: 0;
+      clear: both;
+      visibility: hidden;
+    }
+  </style>
 
 	<script type="text/javascript">
 		/*
@@ -104,6 +104,11 @@
 				layoutMode: 'fitRows'
 			});
 		});
+		*/
+		/*
+		function groundstream_done() {
+			console.log("done");
+		}
 		*/
 	</script>
 	

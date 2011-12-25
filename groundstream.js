@@ -172,38 +172,41 @@ function groundstream_render(tweets) {
 			
 			// save the url in the tweet for easyness later
 			tweet.gs_url = url;
-			if(url.indexOf(service['domain']) > 0) {
+			if(url.indexOf(service['domain']) <= 0) {
+				continue;
+			}
         
-                img = service['transform'](url);
-				tweet.gs_thumbnail = img;
-            
-                // be sure we haven't seen this one before
-                // (filters out RTs)
-                if($.inArray(img, seen) < 0) {
-                    seen.push(img);
-                    
-                    var now = new Date();
-                    var then = new Date(tweet.created_at);
-                    var diff = .001 * (now.getTime() - then.getTime());
-                    
-                    if(diff < 60)
-                        diff = Math.round(diff) + ' seconds';
-                    else if(diff < 120)
-                        diff = '1 minute';
-                    else if(diff < 60*60)
-                        diff = Math.round(diff/60) + ' minutes';
-                    else if(diff < 60*60*24)
-                        diff = Math.round((diff/60)/24) + ' hours';
-                    else
-                        diff = Math.round(((diff/60)/24)/7) + ' days';
-                    
-                    $('#crunch').append(groundstream_tweetHTML(tweet, diff));
-                }
-                // found the right service. done with this tweet.
-                break;
+			img = service['transform'](url);
+			tweet.gs_thumbnail = img;
+        
+            // be sure we haven't seen this one before
+            // (filters out RTs)
+            if($.inArray(img, seen) < 0) {
+                seen.push(img);
+                
+                var now = new Date();
+                var then = new Date(tweet.created_at);
+                var diff = .001 * (now.getTime() - then.getTime());
+                
+                if(diff < 60)
+                    diff = Math.round(diff) + ' seconds';
+                else if(diff < 120)
+                    diff = '1 minute';
+                else if(diff < 60*60)
+                    diff = Math.round(diff/60) + ' minutes';
+                else if(diff < 60*60*24)
+                    diff = Math.round((diff/60)/24) + ' hours';
+                else
+                    diff = Math.round(((diff/60)/24)/7) + ' days';
+                
+                $('#crunch').append(groundstream_tweetHTML(tweet, diff));
             }
+            // found the right service. done with this tweet.
+            break;
         }
     }
+
+	//groundstream_done();
 }
 
 // Gets the first URL written in a tweet
