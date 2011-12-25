@@ -116,15 +116,17 @@ function search(location) {
 
     var place = location;
     var accuracy = '100';
-    var extras = '';
 
-	// for(var service in Services) {
-	// 	console.log(service);
-	// }
+	// construct a query string that includes each image service
+	var query_services = new Array();
+	for(var j=0; j<Services.length; j++) {
+		query_services.push(Services[j]['name']);
+	}
+	var query_string = query_services.join(' OR ');
     
     place = place+','+accuracy+'mi';
 
-    var query = "http://search.twitter.com/search.json?q=twitpic OR yfrog "+extras+"&geocode="+place+"&rpp=100&include_entities=true";
+    var query = "http://search.twitter.com/search.json?q="+query_string+"&geocode="+place+"&rpp=100&include_entities=true";
     if(DEBUG) console.log(query);
 
     var fetch = $.ajax({
@@ -185,6 +187,9 @@ function groundstream_render(tweets) {
         
 			img = service['transform'](url);
 			tweet.gs_thumbnail = img;
+			
+			// save the service name for easyness later
+			tweet.gs_service = service['name'];
         
             // be sure we haven't seen this one before
             // (filters out RTs)
@@ -205,8 +210,10 @@ function groundstream_render(tweets) {
                     diff = Math.round((diff/60)/24) + ' hours';
                 else
                     diff = Math.round(((diff/60)/24)/7) + ' days';
+
+				tweet.gs_time = diff;
                 
-                $('#crunch').append(groundstream_tweetHTML(tweet, diff));
+                $('#crunch').append(groundstream_tweetHTML(tweet));
             }
             // found the right service. done with this tweet.
             break;
@@ -226,10 +233,8 @@ function groundstream_parseURL(tweet, service) {
     return tweet.text.substring(location, location+size);
 }
 
-function groundstream_tweetHTML(tweet, time) {
-	var big_url = tweet.gs_url
-	var thumb_url = tweet.gs_thumbnail;
-    return '<div class="img"><a href="'+big_url+'"><img onerror="javascript:groundstream_imgErr(this)" src="'+thumb_url+'"></a><br />'+time+' ago</div>';
+function groundstream_tweetHTML(tweet) {
+    return '<div class="img"><a href="'+tweet.gs_url+'"><img onerror="javascript:groundstream_imgErr(this)" src="'+tweet.gs_thumbnail+'"></a><br />'+tweet.gs_time+' ago via '+tweet.gs_service+'</div>';
 }
 
 function groundstream_load_town(town) {
