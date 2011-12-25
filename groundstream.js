@@ -1,6 +1,6 @@
-var DEBUG = false;
+var DEBUG = true;
 var Services = [
-	{   
+	{
 	name: "twitpic",
 	domain: "twitpic.com",
 	sample: "http://twitpic.com/123456", 
@@ -27,6 +27,18 @@ var Services = [
       thumb_url = url.substring(0, n) + "/img" + url.substring(n) + "_m.jpg";
       return thumb_url;
     }
+  },
+  {
+    name: "twimg",
+    domain: "p.twimg.com",
+    sample: "http://p.twimg.com/AhedgGpCEAA7cB5.jpg",
+    transform: function(url) { return url+':small' }
+  },
+  {
+    name: "twitgoo",
+    domain: "twitgoo.com",
+    sample: "http://twitgoo.com/54wpxt",
+    transform: function(url) { return url+'/img' }
   }
 ];
 
@@ -228,11 +240,6 @@ function groundstream_parseURL(tweet, service) {
 }
 
 function groundstream_tweetHTML(tweet) {
-	console.log(tweet.gs_service);
-	if(tweet.gs_service == "flickr") {
-		console.log(tweet);
-		console.log('asdf');
-	}
     return '<div class="img"><a href="'+tweet.gs_url+'"><img onerror="javascript:groundstream_imgErr(this)" src="'+tweet.gs_thumbnail+'"></a><br />'+tweet.gs_time+' ago via '+tweet.gs_service+'<div style="display: none">'+tweet.text+'</div></div>';
 }
 
