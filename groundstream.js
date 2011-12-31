@@ -1,10 +1,10 @@
-var DEBUG = true;
+var DEBUG = false;
 var Services = [
 	{
-	name: "twitpic",
-	domain: "twitpic.com",
-	sample: "http://twitpic.com/123456", 
-	transform: function(url){ return url.replace("twitpic.com/", "twitpic.com/show/large/") }
+  	name: "twitpic",
+  	domain: "twitpic.com",
+  	sample: "http://twitpic.com/123456", 
+  	transform: function(url){ return url.replace("twitpic.com/", "twitpic.com/show/large/") }
 	},
   {  
     name: "instagram", 
@@ -43,33 +43,33 @@ var Services = [
 ];
 
 $(function() {
-    // get lat/lon from place
-    if(window.location.hash)
-        $('#woof').val(window.location.hash.replace('#', ''));
+  // get lat/lon from place
+  if(window.location.hash)
+      $('#woof').val(window.location.hash.replace('#', ''));
 
-    var run_timeout; // instant search: save the httprequest so we can kill it
-    var searchPlace = $('#woof').val();
-    
-    run(searchPlace);
-    
-    $('#woof').keyup(function(event) {
-        clearTimeout(run_timeout);
-        searchPlace = $('#woof').val();
+  var run_timeout; // instant search: save the httprequest so we can kill it
+  var searchPlace = $('#woof').val();
+  
+  run(searchPlace);
+  
+  $('#woof').keyup(function(event) {
+    clearTimeout(run_timeout);
+    searchPlace = $('#woof').val();
 
-        // when a key is struck, clear the future RUN call
-        if(run_timeout) {
-            if(DEBUG) console.log('abort!'); 
-            run_timeout.abort;
-        }
-        
-        if(event.keyCode == 13) {
-            // return key
-            run_timeout.abort;
-            run(searchPlace);
-        } else if(event.keyCode >= 65 && event.keyCode <= 90)  {
-            run_timeout = setTimeout(function(){run(searchPlace)}, 500);
-        }
-    });
+    // when a key is struck, clear the future RUN call
+    if(run_timeout) {
+      if(DEBUG) console.log('abort!'); 
+      run_timeout.abort;
+    }
+    
+    if(event.keyCode == 13) {
+      // return key
+      run_timeout.abort;
+      run(searchPlace);
+    } else if(event.keyCode >= 65 && event.keyCode <= 90)  {
+      run_timeout = setTimeout(function(){run(searchPlace)}, 500);
+    }
+  });
 });
 
 // can't bind or live the error method, unfortunately. bug in safari, firefox, etc
@@ -81,50 +81,45 @@ function groundstream_imgErr(thing) {
 }
 
 function stopLoading() {
-    if(window.stop !== undefined)
-    {
-         window.stop();
-    }
-    else if(document.execCommand !== undefined)
-    {
-         document.execCommand("Stop", false);
-    }
+  if(window.stop !== undefined) {
+    window.stop();
+  } else if(document.execCommand !== undefined) {
+    document.execCommand("Stop", false);
+  }
 }
 
 var runcount = 0;
 
 function run(searchPlace) {
-    if(DEBUG) console.log('run '+runcount++);
-    
-    var geocoder = new google.maps.Geocoder();
+  if(DEBUG) console.log('run '+runcount++);
+  
+  var geocoder = new google.maps.Geocoder();
 
-    window.location.hash = searchPlace;
-	if(DEBUG) console.log(searchPlace);
+  window.location.hash = searchPlace;
+  if(DEBUG) console.log(searchPlace);
 
-    $('#crunch').html('loading!');
-    
-    if(geocoder) {
-        
-        geocoder.geocode({ 'address': searchPlace }, function (results, status) {
-            if (status == google.maps.GeocoderStatus.OK) {
-                var lat = results[0].geometry.location.lat();
-                var lon = results[0].geometry.location.lng();
+  $('#crunch').html('loading!');
+  
+  if(geocoder) {
+    geocoder.geocode({ 'address': searchPlace }, function (results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        var lat = results[0].geometry.location.lat();
+        var lon = results[0].geometry.location.lng();
 
-                if(DEBUG) console.log('searching around '+lat+','+lon);
-                search(lat+','+lon);
-            }
-            else {
-                if(DEBUG) console.log("Geocoding failed: " + status);
-            }
-        });
-    }
+        if(DEBUG) console.log('searching around '+lat+','+lon);
+        search(lat+','+lon);
+      } else {
+        if(DEBUG) console.log("Geocoding failed: " + status);
+      }
+    });
+  }
 }
 
 function search(location) {
-    if(DEBUG) console.log('waiting for response...');
+  if(DEBUG) console.log('waiting for response...');
 
-    var place = location;
-    var accuracy = '100';
+  var place = location;
+  var accuracy = '100';
 
 	// construct a query string that includes each image service
 	var query_services = new Array();
@@ -133,100 +128,100 @@ function search(location) {
 	}
 	var query_string = query_services.join(' OR ');
     
-    place = place+','+accuracy+'mi';
+  place = place+','+accuracy+'mi';
 
-    var query = "http://search.twitter.com/search.json?q="+query_string+"&geocode="+place+"&rpp=100&include_entities=true";
-    if(DEBUG) console.log(query);
+  var query = "http://search.twitter.com/search.json?q="+query_string+"&geocode="+place+"&rpp=100&include_entities=true";
+  if(DEBUG) console.log(query);
 
-    var fetch = $.ajax({
-        type:'GET',
-        url:query,
-        data:"callback=?",
-        success:function(feed) {
-            if(DEBUG) console.log('parsing...');
-            $('#crunch').html('');
-            
-            var tweets = [];
-            for(var i=0; i<feed.results.length; i++) {
-                tweets.push(feed.results[i]);
-            }
-            
-            groundstream_render(tweets);   
-        },
-        dataType:'jsonp'
-    });
+  var fetch = $.ajax({
+    type:'GET',
+    url:query,
+    data:"callback=?",
+    success:function(feed) {
+      if(DEBUG) console.log('parsing...');
+      $('#crunch').html('');
+      
+      var tweets = [];
+      for(var i=0; i<feed.results.length; i++) {
+        tweets.push(feed.results[i]);
+      }
+      
+      groundstream_render(tweets);   
+    },
+    dataType:'jsonp'
+  });
 }
 
 function groundstream_render(tweets) {
-    var seen = []; // keep a list of urls we've seen so we don't repeat
-    var tweet;
-    var service;
-	
-	// loop all tweets
-	// don't change this to a foreach, it's done like this on purpose
-    for(var i=0; i<tweets.length; i++) {
-        tweet = tweets[i];
-        
-		// loop each service
-		// don't change this to a foreach, it's done like this on purpose
-        for(var j=0; j<Services.length; j++) {
-            service = Services[j];
-            var url, location, size, img;
+  var seen = []; // keep a list of urls we've seen so we don't repeat
+  var tweet;
+  var service;
 
-			if(typeof tweet.entities.urls == 'undefined') {
-				// someone just said "twitpic" or somesuch, no actual url
-				break;
-			}
-			
-			// TODO: only works with the first url in the tweet. should work with all urls (more than one twitpic)
-			if(typeof tweet.entities.urls[0].expanded_url != 'undefined') {
-				url = tweet.entities.urls[0].expanded_url;
-			} else {
-				url = tweet.entities.urls[0].url;
-			}
-			
-			// save the url in the tweet for easyness later
-			tweet.gs_url = url;
-			if(url.indexOf(service['domain']) <= 0) {
-				continue;
-			}
-        
-			img = service['transform'](url);
-			tweet.gs_thumbnail = img;
-			
-			// save the service name for easyness later
-			tweet.gs_service = service['name'];
-        
-            // be sure we haven't seen this one before
-            // (filters out RTs)
-            if($.inArray(img, seen) < 0) {
-                seen.push(img);
-                
-                var now = new Date();
-                var then = new Date(tweet.created_at);
-                var diff = .001 * (now.getTime() - then.getTime());
-                
-                if(diff < 60)
-                    diff = Math.round(diff) + ' seconds';
-                else if(diff < 120)
-                    diff = '1 minute';
-                else if(diff < 60*60)
-                    diff = Math.round(diff/60) + ' minutes';
-                else if(diff < 60*60*24)
-                    diff = Math.round((diff/60)/24) + ' hours';
-                else
-                    diff = Math.round(((diff/60)/24)/7) + ' days';
+  // loop all tweets
+  // don't change this to a foreach, it's done like this on purpose
+  for(var i=0; i<tweets.length; i++) {
+    tweet = tweets[i];
 
-				tweet.gs_time = diff;
-                
-                $('#crunch').append(groundstream_tweetHTML(tweet));
-            }
-            // found the right service. done with this tweet.
-            break;
-        }
+    // loop each service
+    // don't change this to a foreach, it's done like this on purpose
+    for(var j=0; j<Services.length; j++) {
+      service = Services[j];
+      var url, location, size, img;
+
+      if(typeof tweet.entities.urls == 'undefined') {
+        // someone just said "twitpic" or somesuch, no actual url
+        break;
+      }
+
+      // TODO: only works with the first url in the tweet. should work with all urls (more than one twitpic)
+      if(typeof tweet.entities.urls[0].expanded_url != 'undefined') {
+        url = tweet.entities.urls[0].expanded_url;
+      } else {
+        url = tweet.entities.urls[0].url;
+      }
+
+      // save the url in the tweet for easyness later
+      tweet.gs_url = url;
+      if(url.indexOf(service['domain']) <= 0) {
+        continue;
+      }
+
+      img = service['transform'](url);
+      tweet.gs_thumbnail = img;
+
+      // save the service name for easyness later
+      tweet.gs_service = service['name'];
+
+      // be sure we haven't seen this one before
+      // (filters out RTs)
+      if($.inArray(img, seen) < 0) {
+        seen.push(img);
+
+        var now = new Date();
+        var then = new Date(tweet.created_at);
+        var diff = .001 * (now.getTime() - then.getTime());
+
+        if(diff < 60)
+          diff = Math.round(diff) + ' seconds';
+        else if(diff < 120)
+          diff = '1 minute';
+        else if(diff < 60*60)
+          diff = Math.round(diff/60) + ' minutes';
+        else if(diff < 60*60*24)
+          diff = Math.round((diff/60)/24) + ' hours';
+        else
+          diff = Math.round(((diff/60)/24)/7) + ' days';
+
+        tweet.gs_time = diff;
+
+        $('#crunch').append(groundstream_tweetHTML(tweet));
+      }
+      // found the right service. done with this tweet.
+      break;
     }
+  }
 
-	//groundstream_done();
+  groundstream_done();
 }
 
 // Gets the first URL written in a tweet
@@ -235,12 +230,12 @@ function groundstream_parseURL(tweet, service) {
 		return false;
 	}
 	var location = tweet.text.indexOf("http:");
-    var size = service['sample'].length;
-    return tweet.text.substring(location, location+size);
+  var size = service['sample'].length;
+  return tweet.text.substring(location, location+size);
 }
 
 function groundstream_tweetHTML(tweet) {
-    return '<div class="img"><a href="'+tweet.gs_url+'"><img onerror="javascript:groundstream_imgErr(this)" src="'+tweet.gs_thumbnail+'"></a><br />'+tweet.gs_time+' ago via '+tweet.gs_service+'<div style="display: none">'+tweet.text+'</div></div>';
+  return '<div class="img"><a href="'+tweet.gs_url+'"><img onerror="javascript:groundstream_imgErr(this)" src="'+tweet.gs_thumbnail+'"></a><br />'+tweet.gs_time+' ago via '+tweet.gs_service+'<div style="display: none">'+tweet.text+'</div></div>';
 }
 
 function groundstream_load_town(town) {
@@ -251,13 +246,13 @@ function groundstream_load_town(town) {
 
 function groundstream_getUrlVars()
 {
-    var vars = [], hash;
-    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-    for(var i = 0; i < hashes.length; i++)
-    {
-        hash = hashes[i].split('=');
-        vars.push(hash[0]);
-        vars[hash[0]] = hash[1];
-    }
-    return vars;
+  var vars = [], hash;
+  var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+  for(var i = 0; i < hashes.length; i++)
+  {
+    hash = hashes[i].split('=');
+    vars.push(hash[0]);
+    vars[hash[0]] = hash[1];
+  }
+  return vars;
 }
