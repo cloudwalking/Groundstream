@@ -4,7 +4,7 @@ var Services = [
   	name: "twitpic",
   	domain: "twitpic.com",
   	sample: "http://twitpic.com/123456", 
-  	transform: function(url){ return url.replace("twitpic.com/", "twitpic.com/show/large/") }
+  	transform: function(url){ return url.replace("twitpic.com/", "twitpic.com/show/large/"); }
 	},
   {  
     name: "instagram", 
@@ -16,7 +16,7 @@ var Services = [
     name: "yfrog",
     domain: "yfrog.com",
     sample: "http://yfrog.com/12345678", 
-    transform: function(url){ return url+':medium' }
+    transform: function(url){ return url+':medium'; }
   },
   {
     name: "flickr",
@@ -32,13 +32,19 @@ var Services = [
     name: "twimg",
     domain: "p.twimg.com",
     sample: "http://p.twimg.com/AhedgGpCEAA7cB5.jpg",
-    transform: function(url) { return url+':small' }
+    transform: function(url) { return url+':small'; }
   },
   {
     name: "twitgoo",
     domain: "twitgoo.com",
     sample: "http://twitgoo.com/54wpxt",
-    transform: function(url) { return url+'/img' }
+    transform: function(url) { return url+'/img'; }
+  },
+  {
+    name: "imgur",
+    domain: "i.imgur.com",
+    sample: "http://i.imgur.com/dSKyb.jpg",
+    transform: function(url) { return url.replace(".jpg", "m.jpg"); }
   }
 ];
 
@@ -100,7 +106,7 @@ function run(searchPlace) {
   window.location.hash = searchPlace;
   if(DEBUG) console.log(searchPlace);
 
-  $('#crunch').html('loading!');
+  groundstream_reset_canvas();
   
   if(geocoder) {
     geocoder.geocode({ 'address': searchPlace }, function (results, status) {
@@ -257,4 +263,8 @@ function groundstream_getUrlVars()
     vars[hash[0]] = hash[1];
   }
   return vars;
+}
+
+function groundstream_reset_canvas() {
+  $('#crunch').html('loading!');
 }
