@@ -64,7 +64,9 @@ $(function() {
     
     if(event.keyCode == 13) {
       // return key
-      run_timeout.abort;
+      if(run_timeout) {
+        run_timeout.abort;
+      }
       run(searchPlace);
     } else if(event.keyCode >= 65 && event.keyCode <= 90)  {
       run_timeout = setTimeout(function(){run(searchPlace)}, 500);
