@@ -6,34 +6,37 @@
   <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
   <script type="text/javascript" src="groundstream.js"></script>
   <script type="text/javascript" src="masonry.min.js"></script>
+  <script type="text/javascript" src="jquery.imagesloaded.js"></script>
 
 	<style type="text/css">
     body {
-        margin: 0px;
-        padding: 0;
-	      /* Set this for mobile */
-/*        width: 320px;*/
-        font-family: "Minion Pro", Arial, sans-serif;
-        background-color: #d7faff;
+      margin: 0px;
+      padding: 0;
+	    /* Set this for mobile */
+      /*width: 320px;*/
+      font-family: "Minion Pro", Arial, sans-serif;
+      background-color: #d7faff;
     }
 		body, a {
 			font-family: Helvetica, Arial, sans-serif;
-            font-size: 14px;
-            color: #888;
+      font-size: 14px;
+      color: #888;
 		}
     .img {
-        float: left;
-        margin: 10px;
-        padding: 10px;
-        width: 280px;
-        border: 1px solid #ccc;
-	      line-height: 20px;
+      float: left;
+      margin: 10px;
+      padding: 10px;
+      width: 280px;
+      border: 1px solid #ccc;
+	    line-height: 20px;
+	    
     }
     .img img {
-        width: 280px;
+      width: 280px;
     }
 		#crunch {
 			margin-top: 70px;
+			width: 100%;
 		}
 
 		#top {
@@ -97,26 +100,34 @@
   </style>
 
 	<script type="text/javascript">
-		/*
+		
 		$(function() {
-			$("#crunch").isotope({
-				itemSelector: '.img',
-				layoutMode: 'fitRows'
-			});
+		  $("#logo").click(function() {
+        $("#crunch").masonry("reload");
+  		});
 		});
-		*/
-		/*
+		
+		
+		
 		function groundstream_done() {
-			console.log("done");
+      //$("#crunch").imagesLoaded(function() {
+  		  console.log('images done!!');
+  		  
+  		  $("#crunch").masonry({
+    			itemSelector: '.img',
+    			columnWidth: 1025
+    		});
+    		
+  		//});
 		}
-		*/
+		
 	</script>
 	
 </head>
 <body>
     <div id="top">
 		<div class="cell cell-1">
-			<img src="earth.png" alt="Groundstream">
+			<img id="logo" src="earth.png" alt="Groundstream">
 		</div>
 		<div class="cell cell-2">
 			<input id="woof" type="text" title="location" value="Tokyo" />
