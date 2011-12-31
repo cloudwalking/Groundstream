@@ -37,6 +37,7 @@
 		#crunch {
 			margin-top: 70px;
 			width: 100%;
+			z-index: 1;
 		}
 
 		#top {
@@ -51,6 +52,8 @@
       padding: 10px 10px 0 10px;
       margin-top: 0;
 			height: 43px;
+			
+			z-index: 2;
 		}
 		.cell {
 			width: 320px;
@@ -100,27 +103,21 @@
   </style>
 
 	<script type="text/javascript">
-		
-		$(function() {
-		  $("#logo").click(function() {
+    $(function() {
+      $("#crunch").masonry({
+        itemSelector: '.img',
+        columnWidth: 330
+      });
+    });
+
+
+
+    function groundstream_done() {
+      $("#crunch").imagesLoaded(function() {
+        console.log('images done!!');
         $("#crunch").masonry("reload");
-  		});
-		});
-		
-		
-		
-		function groundstream_done() {
-      //$("#crunch").imagesLoaded(function() {
-  		  console.log('images done!!');
-  		  
-        // $("#crunch").masonry({
-        //          itemSelector: '.img',
-        //          columnWidth: 1025
-        //        });
-    		
-  		//});
-		}
-		
+      });
+    }
 	</script>
 	
 </head>
