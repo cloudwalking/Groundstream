@@ -48,19 +48,26 @@ var Services = [
   }
 ];
 
+var GROUNDSTREAM_CANVAS = null;
+var GROUNDSTREAM_SEARCHBOX = null;
+
 $(function() {
+  GROUNDSTREAM_CANVAS = $('#crunch');
+  GROUNDSTREAM_SEARCHBOX = $('#woof');
+  
+  
   // get lat/lon from place
   if(window.location.hash)
-      $('#woof').val(window.location.hash.replace('#', ''));
+      GROUNDSTREAM_SEARCHBOX.val(window.location.hash.replace('#', ''));
 
   var run_timeout; // instant search: save the httprequest so we can kill it
-  var searchPlace = $('#woof').val();
+  var searchPlace = GROUNDSTREAM_SEARCHBOX.val();
   
   run(searchPlace);
   
-  $('#woof').keyup(function(event) {
+  GROUNDSTREAM_SEARCHBOX.keyup(function(event) {
     clearTimeout(run_timeout);
-    searchPlace = $('#woof').val();
+    searchPlace = GROUNDSTREAM_SEARCHBOX.val();
 
     // when a key is struck, clear the future RUN call
     if(run_timeout) {
@@ -160,6 +167,7 @@ function search(location) {
   });
 }
 
+
 function groundstream_render(tweets) {
   var seen = []; // keep a list of urls we've seen so we don't repeat
   var tweet;
@@ -242,22 +250,23 @@ function groundstream_parseURL(tweet, service) {
   return tweet.text.substring(location, location+size);
 }
 
+// UI to render a tweet
 function groundstream_tweetHTML(tweet) {
   return '<div class="img"><a href="'+tweet.gs_url+'"><img onerror="javascript:groundstream_imgErr(this)" src="'+tweet.gs_thumbnail+'"></a><br />'+tweet.gs_time+' ago via '+tweet.gs_service+'<div style="display: none">'+tweet.text+'</div></div>';
 }
 
-function groundstream_load_town(town) {
-	$('#woof').val(town);
-	run(town);
+// UI buttons to load the town
+function groundstream_load_town(_this) {
+  var town = _this.innerHTML;
+  GROUNDSTREAM_SEARCHBOX.val(town);
+  run(town);
 }
 
 
-function groundstream_getUrlVars()
-{
+function groundstream_getUrlVars() {
   var vars = [], hash;
   var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-  for(var i = 0; i < hashes.length; i++)
-  {
+  for(var i = 0; i < hashes.length; i++) {
     hash = hashes[i].split('=');
     vars.push(hash[0]);
     vars[hash[0]] = hash[1];
@@ -267,4 +276,5 @@ function groundstream_getUrlVars()
 
 function groundstream_reset_canvas() {
   $('#crunch').html('loading!');
+  window.scrollTo(0,0);
 }
