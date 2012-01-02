@@ -1,4 +1,5 @@
 var DEBUG = false;
+var DEBUG_SHOW_TWEETS = true;
 var Services = [
 	{
   	name: "twitpic",
@@ -110,6 +111,7 @@ var runcount = 0;
 function groundstream_run(searchPlace) {
   if(DEBUG) console.log('run '+runcount++);
   groundstream_ui_show();
+  groundstream_ui_analytics(searchPlace);
   
   var geocoder = new google.maps.Geocoder();
 
@@ -180,6 +182,8 @@ function groundstream_render(tweets) {
   // don't change this to a foreach, it's done like this on purpose
   for(var i=0; i<tweets.length; i++) {
     tweet = tweets[i];
+    
+    if(DEBUG && DEBUG_SHOW_TWEETS) console.log(tweet);
 
     // loop each service
     // don't change this to a foreach, it's done like this on purpose

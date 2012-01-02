@@ -22,14 +22,17 @@
       $("#woof2").keyup(function(event) {
         if(event.keyCode == 13) {
           // return key
-          groundstream_run($("#woof2").val())
+          var plae = $("#woof2").val();
+          groundstream_run(place);
         }
       });
       // landing screen search button
       $("#splash-search-button").click(function() {
-        groundstream_run($("#woof2").val())
+        var plae = $("#woof2").val();
+        groundstream_run(place);
       });
     });
+    
     function groundstream_done() {
       $("#crunch").imagesLoaded(function() {
         $("#crunch").masonry({
@@ -39,9 +42,22 @@
         $("#crunch").masonry("reload");
       });
     }
+    
     function groundstream_ui_show() {
       $("#top").removeClass("opacity");
       $("#bottom").removeClass("opacity");
+    }
+    
+    // called to load a location from a ui element
+    function ui_load_town(_this) {
+      groundstream_load_town(_this);
+    }
+    
+    // keep track of various towns seen
+    function groundstream_ui_analytics(place) {
+      if(_gaq) {
+        _gaq.push(['_trackEvent', 'Stream', 'Load', place]);
+      }
     }
 	</script>
 	
@@ -57,22 +73,22 @@
   		<div class="cell cell-3">
     			<ul class="inline">
     				<li>
-    					<a href="#san-francisco" onClick="groundstream_load_town(this)">san francisco</a>
+    					<a href="#san-francisco" onClick="ui_load_town(this)">san francisco</a>
     				</li>
     				<li>
-    					<a href="#boise" onClick="groundstream_load_town(this)">boise</a>
+    					<a href="#boise" onClick="ui_load_town(this)">boise</a>
     				</li>
     				<li>
-    					<a href="#new-orleans" onClick="groundstream_load_town(this)">new orleans</a>
+    					<a href="#new-orleans" onClick="ui_load_town(this)">new orleans</a>
     				</li>
     				<li>
-    					<a href="#paris" onClick="groundstream_load_town(this)">paris</a>
+    					<a href="#paris" onClick="ui_load_town(this)">paris</a>
     				</li>
     				<li>
-    					<a href="#mexico-city" onClick="groundstream_load_town(this)">mexico city</a>
+    					<a href="#mexico-city" onClick="ui_load_town(this)">mexico city</a>
     				</li>
     				<li>
-    					<a href="#bangkok" onClick="groundstream_load_town(this)">bangkok</a>
+    					<a href="#bangkok" onClick="ui_load_town(this)">bangkok</a>
     				</li>
     			</ul>
   			<!--
@@ -81,19 +97,19 @@
   			    earthquake(<a href="http://earthquake.usgs.gov/earthquakes/recenteqsww/Quakes/usc0007fbh.html">?</a>):
 			    </li>
 			    <li>
-  					<a href="#tokyo" onClick="groundstream_load_town(this)">tokyo</a>
+  					<a href="#tokyo" onClick="ui_load_town(this)">tokyo</a>
   				</li>
   				<li>
-  					<a href="#kochi" onClick="groundstream_load_town(this)">kochi</a>
+  					<a href="#kochi" onClick="ui_load_town(this)">kochi</a>
   				</li>
   				<li>
-  					<a href="#shizuoka" onClick="groundstream_load_town(this)">shizuoka</a>
+  					<a href="#shizuoka" onClick="ui_load_town(this)">shizuoka</a>
   				</li>
   				<li>
-  					<a href="#osaka" onClick="groundstream_load_town(this)">osaka</a>
+  					<a href="#osaka" onClick="ui_load_town(this)">osaka</a>
   				</li>
   				<li>
-  					<a href="#yokohama" onClick="groundstream_load_town(this)">yokohama</a>
+  					<a href="#yokohama" onClick="ui_load_town(this)">yokohama</a>
   				</li>
 			  </ul>
 			  -->
@@ -109,22 +125,22 @@
       <span style="display: block; margin-top: 30px">type a place <input id="woof2" type="text" title="location" value="Tokyo" class="textfield" /><button id="splash-search-button" type="button">go</button></span>
       <ul class="inline" style="margin: 30px 0 35px 0;">
 				<li>
-					<a href="#san-francisco" onClick="groundstream_load_town(this)">san francisco</a>
+					<a href="#san-francisco" onClick="ui_load_town(this)">san francisco</a>
 				</li>
 				<li>
-					<a href="#boise" onClick="groundstream_load_town(this)">boise</a>
+					<a href="#boise" onClick="ui_load_town(this)">boise</a>
 				</li>
 				<li>
-					<a href="#new-orleans" onClick="groundstream_load_town(this)">new orleans</a>
+					<a href="#new-orleans" onClick="ui_load_town(this)">new orleans</a>
 				</li>
 				<li>
-					<a href="#paris" onClick="groundstream_load_town(this)">paris</a>
+					<a href="#paris" onClick="ui_load_town(this)">paris</a>
 				</li>
 				<li>
-					<a href="#mexico-city" onClick="groundstream_load_town(this)">mexico city</a>
+					<a href="#mexico-city" onClick="ui_load_town(this)">mexico city</a>
 				</li>
 				<li>
-					<a href="#bangkok" onClick="groundstream_load_town(this)">bangkok</a>
+					<a href="#bangkok" onClick="ui_load_town(this)">bangkok</a>
 				</li>
 			</ul>
 			<span class="light">This site consists entirely of user-generated content. Sometimes it can be NSFW / x-rated.</span>
@@ -140,55 +156,55 @@
     <div class="cell cell-4">
       <ul class="inline">
   			<li>
-  				<a href="#las-vegas" onClick="groundstream_load_town(this)">las vegas</a>
+  				<a href="#las-vegas" onClick="ui_load_town(this)">las vegas</a>
   			</li>
   			<li>
-  				<a href="#rio-de-janeiro" onClick="groundstream_load_town(this)">rio de janeiro</a>
+  				<a href="#rio-de-janeiro" onClick="ui_load_town(this)">rio de janeiro</a>
   			</li>
   			<li>
-  				<a href="#reykjavik" onClick="groundstream_load_town(this)">reykjavik</a>
+  				<a href="#reykjavik" onClick="ui_load_town(this)">reykjavik</a>
   			</li>
   			<li>
-  				<a href="#prag" onClick="groundstream_load_town(this)">prag</a>
+  				<a href="#prag" onClick="ui_load_town(this)">prag</a>
   			</li>
   			<li>
-  				<a href="#amsterdam" onClick="groundstream_load_town(this)">amsterdam</a>
+  				<a href="#amsterdam" onClick="ui_load_town(this)">amsterdam</a>
   			</li>
   			<li>
-  				<a href="#moscow" onClick="groundstream_load_town(this)">moscow</a>
+  				<a href="#moscow" onClick="ui_load_town(this)">moscow</a>
   			</li>
   			<li>
-  				<a href="#bejing" onClick="groundstream_load_town(this)">bejing</a>
+  				<a href="#bejing" onClick="ui_load_town(this)">bejing</a>
   			</li>
   			<li>
-  				<a href="#seoul" onClick="groundstream_load_town(this)">seoul</a>
+  				<a href="#seoul" onClick="ui_load_town(this)">seoul</a>
   			</li>
   			<li>
-  				<a href="#mumbai" onClick="groundstream_load_town(this)">mumbai</a>
+  				<a href="#mumbai" onClick="ui_load_town(this)">mumbai</a>
   			</li>
   			<li>
-  				<a href="#jakarta" onClick="groundstream_load_town(this)">jakarta</a>
+  				<a href="#jakarta" onClick="ui_load_town(this)">jakarta</a>
   			</li>
   			<li>
-  				<a href="#karachi" onClick="groundstream_load_town(this)">karachi</a>
+  				<a href="#karachi" onClick="ui_load_town(this)">karachi</a>
   			</li>
   			<li>
-  				<a href="#manila" onClick="groundstream_load_town(this)">manila</a>
+  				<a href="#manila" onClick="ui_load_town(this)">manila</a>
   			</li>
   			<li>
-  				<a href="#dubai" onClick="groundstream_load_town(this)">dubai</a>
+  				<a href="#dubai" onClick="ui_load_town(this)">dubai</a>
   			</li>
   			<li>
-  				<a href="#istanbul" onClick="groundstream_load_town(this)">istanbul</a>
+  				<a href="#istanbul" onClick="ui_load_town(this)">istanbul</a>
   			</li>
   			<li>
-  				<a href="#singapore" onClick="groundstream_load_town(this)">singapore</a>
+  				<a href="#singapore" onClick="ui_load_town(this)">singapore</a>
   			</li>
   			<li>
-  				<a href="#lahore" onClick="groundstream_load_town(this)">lahore</a>
+  				<a href="#lahore" onClick="ui_load_town(this)">lahore</a>
   			</li>
   			<li>
-  				<a href="#hong-kong" onClick="groundstream_load_town(this)">hong kong</a>
+  				<a href="#hong-kong" onClick="ui_load_town(this)">hong kong</a>
   			</li>
   		</ul>
     </div>
