@@ -51,19 +51,21 @@ var Services = [
 var GROUNDSTREAM_CANVAS = null;
 var GROUNDSTREAM_SEARCHBOX = null;
 
-$(function() {
+function groundstream() {
   GROUNDSTREAM_CANVAS = $('#crunch');
   GROUNDSTREAM_SEARCHBOX = $('#woof');
   
+  var searchPlace;
+  var run_timeout; // instant search: save the httprequest so we can kill it
   
   // get lat/lon from place
-  if(window.location.hash)
-      GROUNDSTREAM_SEARCHBOX.val(window.location.hash.replace('#', ''));
+  if(window.location.hash) {
+    GROUNDSTREAM_SEARCHBOX.val(window.location.hash.replace('#', ''));
 
-  var run_timeout; // instant search: save the httprequest so we can kill it
-  var searchPlace = GROUNDSTREAM_SEARCHBOX.val();
+    searchPlace = GROUNDSTREAM_SEARCHBOX.val();
   
-  run(searchPlace);
+    groundstream_run(searchPlace);
+  }
   
   GROUNDSTREAM_SEARCHBOX.keyup(function(event) {
     clearTimeout(run_timeout);
@@ -80,19 +82,19 @@ $(function() {
       if(run_timeout) {
         run_timeout.abort;
       }
-      run(searchPlace);
+      groundstream_run(searchPlace);
     } else if(event.keyCode >= 65 && event.keyCode <= 90)  {
-      run_timeout = setTimeout(function(){run(searchPlace)}, 500);
+      run_timeout = setTimeout(function(){groundstream_run(searchPlace)}, 500);
     }
   });
-});
+}
 
 // can't bind or live the error method, unfortunately. bug in safari, firefox, etc
 // http://forum.jquery.com/topic/error-event-with-live
 // have to hack it in: <img onerror="javascript:groundstream_imgErr(this)" ...
 function groundstream_imgErr(thing) {
 	// if we're in prod, hide all broken images
-    if(!DEBUG) $(thing).parent().parent().css('display', 'none');
+  if(!DEBUG) $(thing).parent().parent().css('display', 'none');
 }
 
 function stopLoading() {
@@ -105,8 +107,9 @@ function stopLoading() {
 
 var runcount = 0;
 
-function run(searchPlace) {
+function groundstream_run(searchPlace) {
   if(DEBUG) console.log('run '+runcount++);
+  groundstream_ui_show();
   
   var geocoder = new google.maps.Geocoder();
 
@@ -259,7 +262,7 @@ function groundstream_tweetHTML(tweet) {
 function groundstream_load_town(_this) {
   var town = _this.innerHTML;
   GROUNDSTREAM_SEARCHBOX.val(town);
-  run(town);
+  groundstream_run(town);
 }
 
 

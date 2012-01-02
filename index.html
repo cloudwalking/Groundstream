@@ -29,32 +29,50 @@
       width: 280px;
       border: 1px solid #ccc;
 	    line-height: 20px;
-	    
     }
     .img img {
       width: 280px;
     }
-		#crunch {
-			margin-top: 70px;
-			width: 100%;
-			z-index: 1;
-		}
+    .masonry-brick {
+      
+    }
+    
+    #crunch {
+      margin-top: 70px;
+      width: 1000px;
+      z-index: 1;
+    }
 
-		#top {
-			margin-left: 10px;
+    #top {
       color: #666;
       font-size: 15px;
-      position: fixed;
+
       background-color: #d7faff;
 
-      display: block !important;
+      position: fixed;
       width: 100%;
       padding: 10px 10px 0 10px;
-      margin-top: 0;
-			height: 43px;
-			
-			z-index: 2;
+      margin: 0 0 0 0;
+      height: 43px;
+
+      z-index: 2;
+    }
+		
+		#logo-big {
+		  width: 600px;
+      margin: 100px auto 200px auto;
+      text-align: center;
 		}
+		
+		#bottom {
+		  padding: 0 0 20px 10px;
+		}
+		
+		.opacity {
+		  opacity: 0.3;
+      filter: alpha(opacity=30); /* For IE8 and earlier */
+		}
+		
 		.cell {
 			width: 320px;
 			float: left;
@@ -68,7 +86,10 @@
 		.cell-3 {
 			width: 600px;
 		}
-    input {
+		.cell-4 {
+		  width: 800px;
+		}
+    input.textfield {
       font-family: Helvetica, Arial, sans-serif;
       font-size: 10px;
       color: #888;
@@ -87,6 +108,9 @@
     }
     ul {
 		  list-style-type: none;
+		  margin: 0;
+		}
+		#top ul {
 		  margin-top: 5px;
 		}
 		li {
@@ -104,15 +128,33 @@
 
 	<script type="text/javascript">
     $(function() {
-      $("#crunch").masonry({
-        itemSelector: '.img',
-        columnWidth: 330
+      $("#top").addClass("opacity");
+      $("#bottom").addClass("opacity");
+      groundstream();
+      
+      $("#woof2").keyup(function(event) {
+        if(event.keyCode == 13) {
+          // return key
+          groundstream_run($("#woof2").val())
+        }
+      });
+      $("#splash-search-button").click(function() {
+        groundstream_run($("#woof2").val())
       });
     });
     function groundstream_done() {
       $("#crunch").imagesLoaded(function() {
+        $("#crunch").masonry({
+          itemSelector: '.img',
+          columnWidth: 330,
+          isAnimated: true
+        });
         $("#crunch").masonry("reload");
       });
+    }
+    function groundstream_ui_show() {
+      $("#top").removeClass("opacity");
+      $("#bottom").removeClass("opacity");
     }
 	</script>
 	
@@ -123,95 +165,144 @@
   			<img id="logo" src="earth.png" alt="Groundstream">
   		</div>
   		<div class="cell cell-2">
-  			<input id="woof" type="text" title="location" value="Tokyo" />
+  			<input id="woof" type="text" title="location" value="Tokyo" class="textfield" />
   		</div>
   		<div class="cell cell-3">
+    			<ul>
+    				<li>
+    					<a href="#san-francisco" onClick="groundstream_load_town(this)">san francisco</a>
+    				</li>
+    				<li>
+    					<a href="#boise" onClick="groundstream_load_town(this)">boise</a>
+    				</li>
+    				<li>
+    					<a href="#new-orleans" onClick="groundstream_load_town(this)">new orleans</a>
+    				</li>
+    				<li>
+    					<a href="#paris" onClick="groundstream_load_town(this)">paris</a>
+    				</li>
+    				<li>
+    					<a href="#singapore" onClick="groundstream_load_town(this)">singapore</a>
+    				</li>
+    				<li>
+    					<a href="#bangkok" onClick="groundstream_load_town(this)">bangkok</a>
+    				</li>
+    			</ul>
+  			<!--
   			<ul>
-  				<li>
-  					<a href="#san-francisco" onClick="groundstream_load_town(this)">san francisco</a>
+  			  <li>
+  			    earthquake(<a href="http://earthquake.usgs.gov/earthquakes/recenteqsww/Quakes/usc0007fbh.html">?</a>):
+			    </li>
+			    <li>
+  					<a href="#tokyo" onClick="groundstream_load_town(this)">tokyo</a>
   				</li>
   				<li>
-  					<a href="#boise" onClick="groundstream_load_town(this)">boise</a>
+  					<a href="#kochi" onClick="groundstream_load_town(this)">kochi</a>
   				</li>
   				<li>
-  					<a href="#new-orleans" onClick="groundstream_load_town(this)">new orleans</a>
+  					<a href="#shizuoka" onClick="groundstream_load_town(this)">shizuoka</a>
   				</li>
   				<li>
-  					<a href="#paris" onClick="groundstream_load_town(this)">paris</a>
+  					<a href="#osaka" onClick="groundstream_load_town(this)">osaka</a>
   				</li>
   				<li>
-  					<a href="#singapore" onClick="groundstream_load_town(this)">singapore</a>
+  					<a href="#yokohama" onClick="groundstream_load_town(this)">yokohama</a>
   				</li>
-  				<li>
-  					<a href="#bangkok" onClick="groundstream_load_town(this)">bangkok</a>
-  				</li>
-  			</ul>
+			  </ul>
+			  -->
   		</div>
     </div>
 
 	<div class="clearfix"></div>
     
-  <div id="crunch"></div>
+  <div id="crunch">
+    <div id="logo-big">
+      <img src="groundstream.png" alt="Groundstream">
+      <br />live pictures from anywhere in the world
+      <span style="display: block; margin-top: 30px">type a place <input id="woof2" type="text" title="location" value="Tokyo" class="textfield" /><button id="splash-search-button" type="button">go</button></span>
+      <ul style="margin-top: 30px;">
+				<li>
+					<a href="#san-francisco" onClick="groundstream_load_town(this)">san francisco</a>
+				</li>
+				<li>
+					<a href="#boise" onClick="groundstream_load_town(this)">boise</a>
+				</li>
+				<li>
+					<a href="#new-orleans" onClick="groundstream_load_town(this)">new orleans</a>
+				</li>
+				<li>
+					<a href="#paris" onClick="groundstream_load_town(this)">paris</a>
+				</li>
+				<li>
+					<a href="#singapore" onClick="groundstream_load_town(this)">singapore</a>
+				</li>
+				<li>
+					<a href="#bangkok" onClick="groundstream_load_town(this)">bangkok</a>
+				</li>
+			</ul>
+    </div>
+  </div>
     
   <div class="clearfix"></div>
   
-  <div class="cell cell-1">
-    <p>
-      made by <a href="http://twitter.com/reed">reed morse<a><br />
-      my day job is <a href="http://getpunchd.com" title="customer loyalty program">punchd</a>
-    </p>
-  </div>
-  <div class="cell cell-3">
-    <ul>
-			<li>
-				<a href="#las-vegas" onClick="groundstream_load_town(this)">las vegas</a>
-			</li>
-			<li>
-				<a href="#reykjavik" onClick="groundstream_load_town(this)">reykjavik</a>
-			</li>
-			<li>
-				<a href="#prag" onClick="groundstream_load_town(this)">prag</a>
-			</li>
-			<li>
-				<a href="#amsterdam" onClick="groundstream_load_town(this)">amsterdam</a>
-			</li>
-			<li>
-				<a href="#moscow" onClick="groundstream_load_town(this)">moscow</a>
-			</li>
-			<li>
-				<a href="#bejing" onClick="groundstream_load_town(this)">bejing</a>
-			</li>
-			<li>
-				<a href="#seoul" onClick="groundstream_load_town(this)">seoul</a>
-			</li>
-			<li>
-				<a href="#mumbai" onClick="groundstream_load_town(this)">mumbai</a>
-			</li>
-			<li>
-				<a href="#jakarta" onClick="groundstream_load_town(this)">jakarta</a>
-			</li>
-			<li>
-				<a href="#karachi" onClick="groundstream_load_town(this)">karachi</a>
-			</li>
-			<li>
-				<a href="#manila" onClick="groundstream_load_town(this)">manila</a>
-			</li>
-			<li>
-				<a href="#dubai" onClick="groundstream_load_town(this)">dubai</a>
-			</li>
-			<li>
-				<a href="#istanbul" onClick="groundstream_load_town(this)">istanbul</a>
-			</li>
-			<li>
-				<a href="#singapore" onClick="groundstream_load_town(this)">singapore</a>
-			</li>
-			<li>
-				<a href="#lahore" onClick="groundstream_load_town(this)">lahore</a>
-			</li>
-			<li>
-				<a href="#hong-kong" onClick="groundstream_load_town(this)">hong kong</a>
-			</li>
-		</ul>
+  <div id="bottom">
+    <div class="cell cell-1">
+        made by <a href="http://twitter.com/reed">reed morse<a><br />
+        my day job is <a href="http://getpunchd.com" title="customer loyalty program">punchd</a>
+    </div>
+    <div class="cell cell-4">
+      <ul>
+  			<li>
+  				<a href="#las-vegas" onClick="groundstream_load_town(this)">las vegas</a>
+  			</li>
+  			<li>
+  				<a href="#reykjavik" onClick="groundstream_load_town(this)">reykjavik</a>
+  			</li>
+  			<li>
+  				<a href="#prag" onClick="groundstream_load_town(this)">prag</a>
+  			</li>
+  			<li>
+  				<a href="#amsterdam" onClick="groundstream_load_town(this)">amsterdam</a>
+  			</li>
+  			<li>
+  				<a href="#moscow" onClick="groundstream_load_town(this)">moscow</a>
+  			</li>
+  			<li>
+  				<a href="#bejing" onClick="groundstream_load_town(this)">bejing</a>
+  			</li>
+  			<li>
+  				<a href="#seoul" onClick="groundstream_load_town(this)">seoul</a>
+  			</li>
+  			<li>
+  				<a href="#mumbai" onClick="groundstream_load_town(this)">mumbai</a>
+  			</li>
+  			<li>
+  				<a href="#jakarta" onClick="groundstream_load_town(this)">jakarta</a>
+  			</li>
+  			<li>
+  				<a href="#karachi" onClick="groundstream_load_town(this)">karachi</a>
+  			</li>
+  			<li>
+  				<a href="#manila" onClick="groundstream_load_town(this)">manila</a>
+  			</li>
+  			<li>
+  				<a href="#dubai" onClick="groundstream_load_town(this)">dubai</a>
+  			</li>
+  			<li>
+  				<a href="#istanbul" onClick="groundstream_load_town(this)">istanbul</a>
+  			</li>
+  			<li>
+  				<a href="#singapore" onClick="groundstream_load_town(this)">singapore</a>
+  			</li>
+  			<li>
+  				<a href="#lahore" onClick="groundstream_load_town(this)">lahore</a>
+  			</li>
+  			<li>
+  				<a href="#hong-kong" onClick="groundstream_load_town(this)">hong kong</a>
+  			</li>
+  		</ul>
+    </div>
+    <div class="clearfix"></div>
   </div>
 </body>
 <script type="text/javascript">
