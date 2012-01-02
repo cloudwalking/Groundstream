@@ -18,12 +18,14 @@
       $("#bottom").addClass("opacity");
       groundstream();
       
+      // landing screen search box
       $("#woof2").keyup(function(event) {
         if(event.keyCode == 13) {
           // return key
           groundstream_run($("#woof2").val())
         }
       });
+      // landing screen search button
       $("#splash-search-button").click(function() {
         groundstream_run($("#woof2").val())
       });
@@ -54,7 +56,7 @@
   			<input id="woof" type="text" title="location" value="Tokyo" class="textfield" />
   		</div>
   		<div class="cell cell-3">
-    			<ul>
+    			<ul class="inline">
     				<li>
     					<a href="#san-francisco" onClick="groundstream_load_town(this)">san francisco</a>
     				</li>
@@ -106,7 +108,7 @@
       <img src="groundstream.png" alt="Groundstream">
       <br />live pictures from anywhere in the world
       <span style="display: block; margin-top: 30px">type a place <input id="woof2" type="text" title="location" value="Tokyo" class="textfield" /><button id="splash-search-button" type="button">go</button></span>
-      <ul style="margin-top: 30px;">
+      <ul class="inline" style="margin: 30px 0 35px 0;">
 				<li>
 					<a href="#san-francisco" onClick="groundstream_load_town(this)">san francisco</a>
 				</li>
@@ -126,6 +128,7 @@
 					<a href="#bangkok" onClick="groundstream_load_town(this)">bangkok</a>
 				</li>
 			</ul>
+			<span class="light">This site consists entirely of user-generated content. Sometimes it can be NSFW / x-rated.</span>
     </div>
   </div>
     
@@ -133,11 +136,10 @@
   
   <div id="bottom">
     <div class="cell cell-1">
-        made by <a href="http://twitter.com/reed">reed morse<a><br />
-        my day job is <a href="http://getpunchd.com" title="customer loyalty program">punchd</a>
+      <a href="about.html">about this website<a><br />
     </div>
     <div class="cell cell-4">
-      <ul>
+      <ul class="inline">
   			<li>
   				<a href="#las-vegas" onClick="groundstream_load_town(this)">las vegas</a>
   			</li>

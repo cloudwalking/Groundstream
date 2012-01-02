@@ -1,0 +1,62 @@
+<html>
+<head>
+  <title>What's happening right now - Groundstream.org</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  <script type="text/javascript" src="groundstream.js"></script>
+
+	<style type="text/css">
+    @import url("style.css");
+  </style>
+
+	<script type="text/javascript">
+    $(function() {
+      $("#top").addClass("opacity");
+      for(var j=0; j<Services.length; j++) {
+        service = Services[j];
+        $("#services ul").append("<li>"+service['name']+"</li>");
+      }
+    });
+	</script>
+	
+</head>
+<body>
+    <div id="top">
+  		<div class="cell cell-1">
+  			<a href="/"><img id="logo" src="earth.png" alt="Groundstream"></a>
+  		</div>
+    </div>
+
+	<div class="clearfix"></div>
+    
+
+  <div id="about">
+    <img src="groundstream.png" alt="Groundstream">
+    <br />live pictures from anywhere in the world
+    <br /><span style="display: block; margin-top: 30px">
+      Made by <a href="http://twitter.com/reed">Reed Morse</a>
+      <br />Code is on <a href="https://github.com/cloudwalking/Groundstream">Github</a>
+    </span>
+    <div id="services" style="margin-top: 30px">
+      Groundstream searches Twitter for the most recent pictures posted in a given location.
+      <br /><br />Currently support these image hosts:
+      <ul></ul>
+    </div>
+  </div>
+    
+  <div class="clearfix"></div>
+  
+</body>
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-22359785-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</html>

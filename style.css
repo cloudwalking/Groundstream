@@ -26,6 +26,10 @@ body, a {
   
 }
 
+.light {
+  color: #ccc;
+}
+
 #crunch {
   margin-top: 70px;
   width: 1000px;
@@ -49,6 +53,12 @@ body, a {
 
 #logo-big {
   width: 600px;
+  margin: 100px auto 150px auto;
+  text-align: center;
+}
+
+#about {
+  width: 350px;
   margin: 100px auto 200px auto;
   text-align: center;
 }
@@ -98,11 +108,15 @@ h2 {
 ul {
   list-style-type: none;
   margin: 0;
+  padding: 0;
 }
 #top ul {
   margin-top: 5px;
 }
-li {
+#about ul {
+  
+}
+.inline li {
 	display: inline;
 	margin-right: 30px;
 }
