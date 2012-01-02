@@ -237,7 +237,7 @@ function groundstream_render(tweets) {
 
         tweet.gs_time = diff;
 
-        $('#crunch').append(groundstream_tweetHTML(tweet));
+        $('#crunch').append(groundstream_render_tweet(tweet));
       }
       // found the right service. done with this tweet.
       break;
@@ -258,8 +258,34 @@ function groundstream_parseURL(tweet, service) {
 }
 
 // UI to render a tweet
-function groundstream_tweetHTML(tweet) {
-  return '<div class="img"><a href="'+tweet.gs_url+'"><img onerror="javascript:groundstream_imgErr(this)" src="'+tweet.gs_thumbnail+'"></a><br />'+tweet.gs_time+' ago via '+tweet.gs_service+'<div style="display: none">'+tweet.text+'</div></div>';
+function groundstream_render_tweet(tweet) {
+  // main tweet div
+  var render = $(document.createElement('div'));
+  render.addClass('img');
+  
+  // image
+  var img = $(document.createElement('img'))
+  img.attr('onerror', "javascript:groundstream_imgErr(this)");
+  img.attr('src', tweet.gs_thumbnail);
+  
+  // accompanying text
+  var text = '<br />' + tweet.gs_time + ' ago via ' + tweet.gs_service;
+  
+  var extra_stuff = $(document.createElement('div'));
+  extra_stuff.css('display', 'none');
+  extra_stuff.append(tweet.text);
+  
+  // hyperlink the img
+  var hyperlink = $(document.createElement('a'));
+  hyperlink.attr('href', tweet.gs_url);
+  
+  // build it together
+  hyperlink.append(img);
+  render.append(hyperlink);
+  render.append(text);
+  render.append(extra_stuff);
+  
+  return render;
 }
 
 // UI buttons to load the town
