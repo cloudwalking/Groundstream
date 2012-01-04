@@ -88,6 +88,13 @@ body, a {
 .cell-4 {
   width: 800px;
 }
+.left {
+  float: left;
+}
+.right {
+  float: right;
+}
+
 input.textfield {
   font-family: Helvetica, Arial, sans-serif;
   font-size: 10px;
