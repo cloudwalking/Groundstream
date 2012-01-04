@@ -11,6 +11,9 @@ body, a {
   font-size: 14px;
   color: #888;
 }
+.small-text {
+  font-size: 12px;
+}
 .img {
   float: left;
   margin: 10px;
@@ -21,6 +24,11 @@ body, a {
 }
 .img img {
   width: 280px;
+}
+img.avatar{
+  width: 48px;
+  height: 48px;
+  margin: 5px;
 }
 .masonry-brick {
   
@@ -68,8 +76,12 @@ body, a {
 }
 
 .opacity {
-  opacity: 0.3;
-  filter: alpha(opacity=30); /* For IE8 and earlier */
+  opacity: 0.1;
+  filter: alpha(opacity=10); /* For IE8 and earlier */
+}
+.opacity-tweet {
+  opacity: 0.80;
+  filter: alpha(opacity=80); /* For IE8 and earlier */
 }
 
 .cell {

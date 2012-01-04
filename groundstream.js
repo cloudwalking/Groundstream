@@ -1,5 +1,5 @@
 var DEBUG = false;
-var DEBUG_SHOW_TWEETS = false;
+var DEBUG_SHOW_TWEETS = true;
 var Services = [
 	{
   	name: "twitpic",
@@ -92,8 +92,8 @@ function groundstream() {
 
 // can't bind or live the error method, unfortunately. bug in safari, firefox, etc
 // http://forum.jquery.com/topic/error-event-with-live
-// have to hack it in: <img onerror="javascript:groundstream_imgErr(this)" ...
-function groundstream_imgErr() {
+// have to hack it in: <img onerror="javascript:groundstream_image_load_error(this)" ...
+function groundstream_image_load_error() {
 	// if we're in prod, hide all broken images
   if(!DEBUG) $(this).parent().parent().css('display', 'none');
 }
@@ -205,6 +205,8 @@ function groundstream_render(tweets) {
 
       // save the url in the tweet for easyness later
       tweet.gs_url = url;
+      
+      // sanity check
       if(url.indexOf(service['domain']) <= 0) {
         continue;
       }
@@ -260,46 +262,44 @@ function groundstream_parseURL(tweet, service) {
 // UI to render a tweet
 function groundstream_render_tweet(tweet) {
   // main tweet div
-  var render = $(document.createElement('div'));
-  render.addClass('img');
+  var $render = $(document.createElement('div')).addClass('img');
   
   // image
-  var img = $(document.createElement('img'))
-  //img.attr('onerror', "javascript:groundstream_imgErr(this)");
-  img.attr('src', tweet.gs_thumbnail);
-  img.error(groundstream_imgErr);
-  
-  
-  // accompanying text
-  var left = $(document.createElement('div'));
-  var text = tweet.gs_time + ' ago via ' + tweet.gs_service;
-  left.addClass('left');
-  left.append(text);
-  
-  var right = $(document.createElement('div'));
-  right.addClass('right');
-  right.append("more");
+  var $img = $(document.createElement('img'))
+  $img.attr('src', tweet.gs_thumbnail);
+  $img.error(groundstream_image_load_error);
     
-  // add the tweet in case we want it
-  var extra_stuff = $(document.createElement('div'));
-  extra_stuff.css('display', 'none');
-  extra_stuff.append(tweet.text);
+  // add the tweet to the bottom
+  // |-avatar-|--time-----------|
+  // |--------|--tweet----------|
+  // avatar 
+  var $avatar_div = $(document.createElement('div')).addClass('left');
+  $avatar_div.append($(document.createElement('img')).addClass('avatar').attr('src', tweet.profile_image_url))
+  // text
+  var $wide_div = $(document.createElement('div')).addClass('right').css('width', '220px');
+  $wide_div.append(
+    $(document.createElement('strong')).append(tweet.from_user).append('<br />'));
+  $wide_div.append(tweet.text);
+  // div to hold it all
+  var $tweet_itself = $(document.createElement('div')).addClass('opacity-tweet');
+  $tweet_itself.append($avatar_div);
+  $tweet_itself.append($wide_div);
+  // time difference between Now and tweet time
+  var time_diff = $(document.createElement('span')).addClass('small-text').append(tweet.gs_time + ' ago via ' + tweet.gs_service);
+  $wide_div.append($(document.createElement('div')).addClass('clearfix'));
+  $wide_div.append(time_diff);
   
   // hyperlink the img
-  var hyperlink = $(document.createElement('a'));
-  hyperlink.attr('href', tweet.gs_url);
-  
+  var $hyperlink = $(document.createElement('a')).attr('href', tweet.gs_url);
   // build it together
-  hyperlink.append(img);
-  render.append(hyperlink);
-  render.append(left);
-  render.append(right);
-  render.append(extra_stuff);
+  $hyperlink.append($img);
+  $render.append($hyperlink);
+  $render.append($tweet_itself);
   
   // slap the tweet data on here for later
-  render.data('gs_tweet', tweet);
+  $render.data('gs_tweet', tweet);
   
-  return render;
+  return $render;
 }
 
 // UI buttons to load the town
