@@ -1,5 +1,5 @@
 var DEBUG = false;
-var DEBUG_SHOW_TWEETS = true;
+var DEBUG_SHOW_TWEETS = false;
 var Services = [
 	{
   	name: "twitpic",
@@ -85,7 +85,7 @@ function groundstream() {
       }
       groundstream_run(searchPlace);
     } else if(event.keyCode >= 65 && event.keyCode <= 90)  {
-      run_timeout = setTimeout(function(){groundstream_run(searchPlace)}, 500);
+      run_timeout = setTimeout(function(){ groundstream_run(searchPlace) }, 500);
     }
   });
 }
@@ -93,9 +93,9 @@ function groundstream() {
 // can't bind or live the error method, unfortunately. bug in safari, firefox, etc
 // http://forum.jquery.com/topic/error-event-with-live
 // have to hack it in: <img onerror="javascript:groundstream_imgErr(this)" ...
-function groundstream_imgErr(thing) {
+function groundstream_imgErr() {
 	// if we're in prod, hide all broken images
-  if(!DEBUG) $(thing).parent().parent().css('display', 'none');
+  if(!DEBUG) $(this).parent().parent().css('display', 'none');
 }
 
 function stopLoading() {
@@ -265,12 +265,22 @@ function groundstream_render_tweet(tweet) {
   
   // image
   var img = $(document.createElement('img'))
-  img.attr('onerror', "javascript:groundstream_imgErr(this)");
+  //img.attr('onerror', "javascript:groundstream_imgErr(this)");
   img.attr('src', tweet.gs_thumbnail);
+  img.error(groundstream_imgErr);
+  
   
   // accompanying text
-  var text = '<br />' + tweet.gs_time + ' ago via ' + tweet.gs_service;
+  var left = $(document.createElement('div'));
+  var text = tweet.gs_time + ' ago via ' + tweet.gs_service;
+  left.addClass('left');
+  left.append(text);
   
+  var right = $(document.createElement('div'));
+  right.addClass('right');
+  right.append("more");
+    
+  // add the tweet in case we want it
   var extra_stuff = $(document.createElement('div'));
   extra_stuff.css('display', 'none');
   extra_stuff.append(tweet.text);
@@ -282,8 +292,12 @@ function groundstream_render_tweet(tweet) {
   // build it together
   hyperlink.append(img);
   render.append(hyperlink);
-  render.append(text);
+  render.append(left);
+  render.append(right);
   render.append(extra_stuff);
+  
+  // slap the tweet data on here for later
+  render.data('gs_tweet', tweet);
   
   return render;
 }
