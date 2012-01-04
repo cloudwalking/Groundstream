@@ -34,6 +34,13 @@
     });
     
     function groundstream_done() {
+      // enable masonry stacking
+      $("#crunch").masonry({
+        itemSelector: '.img',
+        columnWidth: 330
+      });
+      
+      // redraw the masonry when all images are loaded
       $("#crunch").imagesLoaded(function() {
         $("#crunch").masonry({
           itemSelector: '.img',
@@ -41,6 +48,16 @@
         });
         $("#crunch").masonry("reload");
       });
+      
+      // redraw periodically (presumably before images are all loaded)
+      // to make things less shocking
+      for(var i=0; i<20; i++) {
+        setTimeout(groundstream_ui_masonry, 250);
+      }
+    }
+    
+    function groundstream_ui_masonry() {
+      $("#crunch").masonry("reload");
     }
     
     function groundstream_ui_show() {
