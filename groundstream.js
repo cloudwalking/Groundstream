@@ -1,4 +1,4 @@
-var DEBUG = true;
+var DEBUG = false;
 var DEBUG_SHOW_TWEETS = true;
 var Services = [
 	{
