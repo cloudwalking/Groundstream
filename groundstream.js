@@ -1,4 +1,4 @@
-var DEBUG = false;
+var DEBUG = true;
 var DEBUG_SHOW_TWEETS = true;
 var Services = [
 	{
@@ -191,7 +191,8 @@ function groundstream_render(tweets) {
       service = Services[j];
       var url, location, size, img;
 
-      if(typeof tweet.entities.urls == 'undefined') {
+      if(typeof tweet.entities.urls == 'undefined'
+        || tweet.entities.urls.length == 0) {
         // someone just said "twitpic" or somesuch, no actual url
         break;
       }
