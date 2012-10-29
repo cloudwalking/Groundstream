@@ -1,3 +1,17 @@
 <filesMatch "^\..*">
 deny from all
 </filesMatch>
+
+## prevent caching of JS file: http://stackoverflow.com/questions/5061978/recommended-cache-control-method
+
+# mod_expires directives: 
+# enable expires/max-age headers and set default to 0 seconds from last access time
+ExpiresActive On
+ExpiresByType text/js A0
+
+# mod_headers directives:
+# send variety of no-cache directives, should cover any quirky clients and gateways
+<Files *.js>
+Header set Cache-Control "max-age=0, private, no-cache, no-store, must-revalidate, proxy-revalidate, no-transform"
+Header set Pragma "no-cache"
+</Files>
