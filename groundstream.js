@@ -1,5 +1,5 @@
-var DEBUG = true;
-var DEBUG_SHOW_TWEETS = true;
+var DEBUG = false;
+var DEBUG_SHOW_TWEETS = false;
 var Services = [
   {
   	name: "twitpic",
@@ -125,48 +125,66 @@ function groundstream_run(searchPlace) {
   if(DEBUG) console.log('run '+runcount++);
   groundstream_ui_show();
   groundstream_ui_analytics(searchPlace);
-  
-  var geocoder = new google.maps.Geocoder();
 
-  window.location.hash = searchPlace;
   $GROUNDSTREAM_SEARCHBOX.val(searchPlace);
   if(DEBUG) console.log(searchPlace);
-
   groundstream_reset_canvas();
   
-  if(geocoder) {
-    geocoder.geocode({ 'address': searchPlace }, function (results, status) {
-      if (status == google.maps.GeocoderStatus.OK) {
-        var lat = results[0].geometry.location.lat();
-        var lon = results[0].geometry.location.lng();
+  // If there's a hashtag, search by keyword.
+  // First hashtag is stripped before entering this function,
+  // so it'll need two hashtags from a URL (eg ##boise).
+  if (searchPlace.indexOf("#") != -1) {
+    search_hashtag(searchPlace);
+  } else {
+    window.location.hash = searchPlace;
+    var geocoder = new google.maps.Geocoder();
+    if(geocoder) {
+      geocoder.geocode({ 'address': searchPlace }, function (results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          var lat = results[0].geometry.location.lat();
+          var lon = results[0].geometry.location.lng();
 
-        if(DEBUG) console.log('searching around '+lat+','+lon);
-        search(lat+','+lon);
-      } else {
-        if(DEBUG) console.log("Geocoding failed: " + status);
-      }
-    });
+          if(DEBUG) console.log('searching around '+lat+','+lon);
+          search_location(lat+','+lon);
+        } else {
+          if(DEBUG) console.log("Geocoding failed: " + status);
+        }
+      });
+    }
   }
 }
 
-function search(location) {
-  if(DEBUG) console.log('waiting for response...');
+function search_hashtag(tagWithHashtag) {
+  search(tagWithHashtag, null);
+}
 
-  var place = location;
+function search_location(latlon) {
   var accuracy = '100';
+  var place = latlon+','+accuracy+'mi';
+  search(null, place);
+}
 
-	// construct a query string that includes each image service
+function search(hashtag, location) {
+  // construct a query string that includes each image service
 	var query_services = new Array();
 	for(var j=0; j<Services.length; j++) {
 		query_services.push(Services[j]['name']);
 	}
 	var query_string = query_services.join(' OR ');
+	
+  if (DEBUG) console.log("hashtag: " + hashtag);
+  if (DEBUG) console.log("location: " + location);
+	
+  hashtag = hashtag !== null ? ' ' + hashtag.replace('#', '%23') : "";
+  location = location !== null ? "&geocode=" + location : "";
+  
+  query_string = query_string + hashtag;
     
-  place = place+','+accuracy+'mi';
+  var query = "http://search.twitter.com/search.json?q="+query_string+""+location+"&rpp=100&include_entities=true";
 
-  var query = "http://search.twitter.com/search.json?q="+query_string+"&geocode="+place+"&rpp=100&include_entities=true";
   if(DEBUG) console.log(query);
 
+  if(DEBUG) console.log('waiting for response...');
   var fetch = $.ajax({
     type:'GET',
     url:query,
