@@ -1,3 +1,12 @@
 http://groundstream.org
 
 See what's happening.
+
+TODO:
+[X] Show tweet text
+[X] Show tweet avatar
+[ ] Link to tweet
+[ ] Link to user
+[ ] "Restream" (post to twitter) button for individual post
+[ ] Twitter favorite individual post
+[ ] for each city, float favorited posts to the top
