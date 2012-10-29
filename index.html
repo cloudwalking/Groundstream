@@ -5,7 +5,7 @@
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
   <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
   <script type="text/javascript" src="groundstream.js"></script>
-  <script type="text/javascript" src="masonry.min.js"></script>
+  <!--<script type="text/javascript" src="masonry.min.js"></script>-->
   <script type="text/javascript" src="jquery.imagesloaded.js"></script>
 
 	<style type="text/css">
@@ -34,7 +34,11 @@
     });
     
     function groundstream_done() {
-      // enable masonry stacking
+	 		// Masonry isn't working nicely, disable it until we can fix it.
+			// Also reimport the js file.
+			return;
+      
+			// enable masonry stacking
       $("#crunch").masonry({
         itemSelector: '.img',
         columnWidth: 330
