@@ -33,35 +33,9 @@
       });
     });
     
+    // Any formatting once the thumbnails are rendered.
     function groundstream_done() {
-	 		// Masonry isn't working nicely, disable it until we can fix it.
-			// Also reimport the js file.
-			return;
-      
-			// enable masonry stacking
-      $("#crunch").masonry({
-        itemSelector: '.img',
-        columnWidth: 330
-      });
-      
-      // redraw the masonry when all images are loaded
-      $("#crunch").imagesLoaded(function() {
-        $("#crunch").masonry({
-          itemSelector: '.img',
-          columnWidth: 330
-        });
-        $("#crunch").masonry("reload");
-      });
-      
-      // redraw periodically (presumably before images are all loaded)
-      // to make things less shocking
-      for(var i=0; i<20; i++) {
-        setTimeout(groundstream_ui_masonry, 250);
-      }
-    }
-    
-    function groundstream_ui_masonry() {
-      $("#crunch").masonry("reload");
+  		return;
     }
     
     function groundstream_ui_show() {
@@ -92,26 +66,49 @@
   			<input id="woof" type="text" title="location" value="Tokyo" class="textfield" />
   		</div>
   		<div class="cell cell-3">
-    			<ul class="inline">
-    				<li>
-    					<a href="#san-francisco" onClick="ui_load_town(this)">san francisco</a>
-    				</li>
-    				<li>
-    					<a href="#boise" onClick="ui_load_town(this)">boise</a>
-    				</li>
-    				<li>
-    					<a href="#new-orleans" onClick="ui_load_town(this)">new orleans</a>
-    				</li>
-    				<li>
-    					<a href="#paris" onClick="ui_load_town(this)">paris</a>
-    				</li>
-    				<li>
-    					<a href="#mexico-city" onClick="ui_load_town(this)">mexico city</a>
-    				</li>
-    				<li>
-    					<a href="#bangkok" onClick="ui_load_town(this)">bangkok</a>
-    				</li>
-    			</ul>
+  		  <ul class="inline">
+  				<li>
+  					<b>hurricane sandy:</b>
+  				</li>
+  				<li>
+  					<a href="#new-york-ny" onClick="ui_load_town(this)">new york</a>
+  				</li>
+  				<li>
+  					<a href="#washington-dc" onClick="ui_load_town(this)">washington dc</a>
+  				</li>
+  				<li>
+  					<a href="#boston" onClick="ui_load_town(this)">boston</a>
+  				</li>
+  				<li>
+  					<a href="#atlantic-city" onClick="ui_load_town(this)">atlantic city</a>
+  				</li>
+  				<li>
+  					<a href="#dover" onClick="ui_load_town(this)">dover</a>
+  				</li>
+  			</ul>
+  			
+		    <!--
+  			<ul class="inline">
+  				<li>
+  					<a href="#san-francisco" onClick="ui_load_town(this)">san francisco</a>
+  				</li>
+  				<li>
+  					<a href="#boise" onClick="ui_load_town(this)">boise</a>
+  				</li>
+  				<li>
+  					<a href="#new-orleans" onClick="ui_load_town(this)">new orleans</a>
+  				</li>
+  				<li>
+  					<a href="#paris" onClick="ui_load_town(this)">paris</a>
+  				</li>
+  				<li>
+  					<a href="#mexico-city" onClick="ui_load_town(this)">mexico city</a>
+  				</li>
+  				<li>
+  					<a href="#bangkok" onClick="ui_load_town(this)">bangkok</a>
+  				</li>
+  			</ul>
+  		  -->
   			<!--
   			<ul>
   			  <li>
@@ -144,26 +141,44 @@
       <img src="groundstream.png" alt="Groundstream">
       <br />live pictures from anywhere in the world
       <br /><br /><span>This site consists entirely of user-generated content. Sometimes it can be NSFW / x-rated.</span>
-      <span style="display: block; margin-top: 30px">type a place <input id="woof2" type="text" title="location" value="Tokyo" class="textfield" /><button id="splash-search-button" type="button">go</button></span>
+      <span style="display: block; margin-top: 30px">type a place <input id="woof2" type="text" title="location" value="New York, NY" class="textfield" /><button id="splash-search-button" type="button">go</button></span>
       <ul class="inline" style="margin: 15px 0 35px 0;">
-				<li>
-					<a href="#san-francisco" onClick="ui_load_town(this)">san francisco</a>
+        <li>
+					<b>hurricane sandy:</b>
 				</li>
 				<li>
-					<a href="#boise" onClick="ui_load_town(this)">boise</a>
+					<a href="#new-york-ny" onClick="ui_load_town(this)">new york</a>
 				</li>
 				<li>
-					<a href="#new-orleans" onClick="ui_load_town(this)">new orleans</a>
+					<a href="#washington-dc" onClick="ui_load_town(this)">washington dc</a>
 				</li>
 				<li>
-					<a href="#paris" onClick="ui_load_town(this)">paris</a>
+					<a href="#boston" onClick="ui_load_town(this)">boston</a>
 				</li>
 				<li>
-					<a href="#mexico-city" onClick="ui_load_town(this)">mexico city</a>
+					<a href="#atlantic-city" onClick="ui_load_town(this)">atlantic city</a>
 				</li>
 				<li>
-					<a href="#bangkok" onClick="ui_load_town(this)">bangkok</a>
+					<a href="#dover" onClick="ui_load_town(this)">dover</a>
 				</li>
+        <!-- <li>
+          <a href="#san-francisco" onClick="ui_load_town(this)">san francisco</a>
+        </li>
+        <li>
+          <a href="#boise" onClick="ui_load_town(this)">boise</a>
+        </li>
+        <li>
+          <a href="#new-orleans" onClick="ui_load_town(this)">new orleans</a>
+        </li>
+        <li>
+          <a href="#paris" onClick="ui_load_town(this)">paris</a>
+        </li>
+        <li>
+          <a href="#mexico-city" onClick="ui_load_town(this)">mexico city</a>
+        </li>
+        <li>
+          <a href="#bangkok" onClick="ui_load_town(this)">bangkok</a>
+        </li> -->
 			</ul>
     </div>
   </div>
@@ -232,6 +247,7 @@
     <div class="clearfix"></div>
   </div>
 </body>
+<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
 <script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-22359785-1']);

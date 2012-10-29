@@ -30,9 +30,6 @@ img.avatar{
   height: 48px;
   margin: 5px;
 }
-.masonry-brick {
-  
-}
 
 .light {
   color: #ccc;
@@ -75,6 +72,10 @@ img.avatar{
   padding: 0 0 20px 10px;
 }
 
+/**********************/
+/**********************/
+/******* TWEETS *******/
+
 .opacity {
   opacity: 0.1;
   filter: alpha(opacity=10); /* For IE8 and earlier */
@@ -82,6 +83,23 @@ img.avatar{
 .opacity-tweet {
   opacity: 0.80;
   filter: alpha(opacity=80); /* For IE8 and earlier */
+}
+.twitter-icon {
+  background-image: url('https://si0.twimg.com/images/dev/cms/intents/icons/sprites/everything-spritev2.png');
+  background-repeat: no-repeat;
+  display: inline-block;
+  padding: 8px;
+  content: "";
+  vertical-align: text-top;
+}
+.tweet-tools {
+  text-align: center;
+}
+.favorite {
+  background-position: -48px 0 !important;
+}
+.retweet {
+  background-position: -96px 0 !important;
 }
 
 .cell {

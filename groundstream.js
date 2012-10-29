@@ -1,23 +1,29 @@
-var DEBUG = false;
+var DEBUG = true;
 var DEBUG_SHOW_TWEETS = true;
 var Services = [
-	{
+  {
   	name: "twitpic",
   	domain: "twitpic.com",
   	sample: "http://twitpic.com/123456", 
-  	transform: function(url){ return url.replace("twitpic.com/", "twitpic.com/show/large/"); }
-	},
+  	transform: function(url) {
+  	  return url.replace("twitpic.com/", "twitpic.com/show/large/");
+  	}
+  },
   {  
     name: "instagram", 
     domain: "instagr.am",
     sample: "http://instagr.am/p/CIW2h/", 
-    transform: function(url){ return url+'media?size=m'; }
+    transform: function(url) {
+      return url+'media?size=m';
+    }
   },
   {   
     name: "yfrog",
     domain: "yfrog.com",
     sample: "http://yfrog.com/12345678", 
-    transform: function(url){ return url+':medium'; }
+    transform: function(url) {
+      return url+':medium';
+    }
   },
   {
     name: "flickr",
@@ -33,44 +39,51 @@ var Services = [
     name: "twimg",
     domain: "p.twimg.com",
     sample: "http://p.twimg.com/AhedgGpCEAA7cB5.jpg",
-    transform: function(url) { return url+':small'; }
+    transform: function(url) {
+      return url+':small';
+    }
   },
   {
     name: "twitgoo",
     domain: "twitgoo.com",
     sample: "http://twitgoo.com/54wpxt",
-    transform: function(url) { return url+'/img'; }
+    transform: function(url) {
+      return url+'/img';
+    }
   },
   {
     name: "imgur",
     domain: "i.imgur.com",
     sample: "http://i.imgur.com/dSKyb.jpg",
-    transform: function(url) { return url.replace(".jpg", "m.jpg"); }
+    transform: function(url) {
+      return url.replace(".jpg", "m.jpg");
+    }
   }
 ];
 
-var GROUNDSTREAM_CANVAS = null;
-var GROUNDSTREAM_SEARCHBOX = null;
+var $GROUNDSTREAM_CANVAS = null;
+var $GROUNDSTREAM_SEARCHBOX = null;
 
+// Called to start everything up.
 function groundstream() {
-  GROUNDSTREAM_CANVAS = $('#crunch');
-  GROUNDSTREAM_SEARCHBOX = $('#woof');
+  $GROUNDSTREAM_CANVAS = $('#crunch');
+  $GROUNDSTREAM_SEARCHBOX = $('#woof');
   
   var searchPlace;
   var run_timeout; // instant search: save the httprequest so we can kill it
   
-  // get lat/lon from place
+  // get lat/lon from place name
   if(window.location.hash) {
-    GROUNDSTREAM_SEARCHBOX.val(window.location.hash.replace('#', ''));
+    $GROUNDSTREAM_SEARCHBOX.val(window.location.hash.replace('#', ''));
 
-    searchPlace = GROUNDSTREAM_SEARCHBOX.val();
+    searchPlace = $GROUNDSTREAM_SEARCHBOX.val();
   
     groundstream_run(searchPlace);
   }
   
-  GROUNDSTREAM_SEARCHBOX.keyup(function(event) {
+  $GROUNDSTREAM_SEARCHBOX.keyup(function(event) {
     clearTimeout(run_timeout);
-    searchPlace = GROUNDSTREAM_SEARCHBOX.val();
+    searchPlace = $GROUNDSTREAM_SEARCHBOX.val();
 
     // when a key is struck, clear the future RUN call
     if(run_timeout) {
@@ -116,6 +129,7 @@ function groundstream_run(searchPlace) {
   var geocoder = new google.maps.Geocoder();
 
   window.location.hash = searchPlace;
+  $GROUNDSTREAM_SEARCHBOX.val(searchPlace);
   if(DEBUG) console.log(searchPlace);
 
   groundstream_reset_canvas();
@@ -275,7 +289,26 @@ function groundstream_render_tweet(tweet) {
   // |--------|--tweet----------|
   // avatar 
   var $avatar_div = $(document.createElement('div')).addClass('left');
-  $avatar_div.append($(document.createElement('img')).addClass('avatar').attr('src', tweet.profile_image_url))
+  $avatar_div.append($(document.createElement('img')).addClass('avatar').attr('src', tweet.profile_image_url));
+  var $tweet_tools = $(document.createElement('div')).addClass('tweet-tools');
+  $avatar_div.append($tweet_tools);
+  $tweet_tools.append(
+    $(document.createElement('a')).attr('href',
+        "https://twitter.com/intent/tweet?url=" + tweet.gs_url +
+        "&hashtags=groundstream" +
+        "&text=RT " + tweet.from_user +": " + tweet.text +
+        "&related=ground_stream,reed").append(
+          $(document.createElement('span')).addClass('twitter-icon retweet')
+    )
+  );
+  $tweet_tools.append(
+    $(document.createElement('a')).attr('href',
+        "https://twitter.com/intent/favorite?tweet_id=" + tweet.id_str +
+        "&related=ground_stream,reed").append(
+          $(document.createElement('span')).addClass('twitter-icon favorite')
+    )
+  );
+
   // text
   var $wide_div = $(document.createElement('div')).addClass('right').css('width', '220px');
   $wide_div.append(
@@ -306,7 +339,7 @@ function groundstream_render_tweet(tweet) {
 // UI buttons to load the town
 function groundstream_load_town(_this) {
   var town = _this.innerHTML;
-  GROUNDSTREAM_SEARCHBOX.val(town);
+  $GROUNDSTREAM_SEARCHBOX.val(town);
   groundstream_run(town);
 }
 
