@@ -9,4 +9,5 @@ TODO:
 [ ] Link to user
 [ ] "Restream" (post to twitter) button for individual post
 [ ] Twitter favorite individual post
+[ ] /view page which embeds big image (MVP: iFrame)
 [ ] for each city, float favorited posts to the top
