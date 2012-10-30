@@ -1,4 +1,5 @@
-var DEBUG = false;
+var RETWEETS_ENABLED = false;
+var DEBUG = true;
 var DEBUG_SHOW_TWEETS = false;
 var Services = [
   {
@@ -179,8 +180,13 @@ function search(hashtag, location) {
   location = location !== null ? "&geocode=" + location : "";
   
   query_string = query_string + hashtag;
+  
+  var rt = '';
+  if (RETWEETS_ENABLED) {
+    rt = '-"rt%20"';
+  }
     
-  var query = "http://search.twitter.com/search.json?q="+query_string+""+location+"&rpp=100&include_entities=true";
+  var query = "http://search.twitter.com/search.json?q=" + rt + "%20" + query_string + "" + location + " -rt&rpp=100&include_entities=true";
 
   if(DEBUG) console.log(query);
 
