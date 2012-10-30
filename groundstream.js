@@ -1,4 +1,4 @@
-var RETWEETS_ENABLED = false;
+var RETWEETS_ENABLED = true;
 var DEBUG = true;
 var DEBUG_SHOW_TWEETS = false;
 var Services = [
