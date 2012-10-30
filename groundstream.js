@@ -1,6 +1,6 @@
 var RETWEETS_ENABLED = true;
 var DEBUG = true;
-var DEBUG_SHOW_TWEETS = false;
+var DEBUG_SHOW_TWEETS = true;
 var Services = [
   {
   	name: "twitpic",
@@ -75,6 +75,7 @@ function groundstream() {
   
   // get lat/lon from place name
   if(window.location.hash) {
+    // Put url hash into search box
     $GROUNDSTREAM_SEARCHBOX.val(window.location.hash.replace('#', ''));
 
     searchPlace = $GROUNDSTREAM_SEARCHBOX.val();
@@ -127,6 +128,7 @@ function groundstream_run(searchPlace) {
   groundstream_ui_show();
 
   $GROUNDSTREAM_SEARCHBOX.val(searchPlace);
+  window.location.hash = searchPlace;
   if(DEBUG) console.log(searchPlace);
   groundstream_reset_canvas();
   
@@ -136,7 +138,6 @@ function groundstream_run(searchPlace) {
   if (searchPlace.indexOf("#") != -1) {
     search_hashtag(searchPlace);
   } else {
-    window.location.hash = searchPlace;
     var geocoder = new google.maps.Geocoder();
     if(geocoder) {
       geocoder.geocode({ 'address': searchPlace }, function (results, status) {
