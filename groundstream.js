@@ -315,14 +315,17 @@ function groundstream_render_tweet(tweet) {
   $avatar_div.append($(document.createElement('img')).addClass('avatar').attr('src', tweet.profile_image_url));
   var $tweet_tools = $(document.createElement('div')).addClass('tweet-tools');
   $avatar_div.append($tweet_tools);
+  // Retweet twitter button.
   $tweet_tools.append(
     $(document.createElement('a')).attr('href',
         "https://twitter.com/intent/tweet?url=" + tweet.gs_url +
         "&hashtags=groundstream" +
+        "&text=RT " + tweet.from_user +": " + tweet.text +
         "&related=ground_stream,reed").append(
           $(document.createElement('span')).addClass('twitter-icon retweet')
     )
   );
+  // Favorite twitter button.
   $tweet_tools.append(
     $(document.createElement('a')).attr('href',
         "https://twitter.com/intent/favorite?tweet_id=" + tweet.id_str +
