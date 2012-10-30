@@ -8,6 +8,12 @@ TODO:
 [ ] Link to tweet
 [ ] Link to user
 [ ] "Restream" (post to twitter) button for individual post
-[ ] Twitter favorite individual post
+[X] Twitter favorite individual tweet
+[X] Twitter retweet
 [ ] /view page which embeds big image (MVP: iFrame)
 [ ] for each city, float favorited posts to the top
+
+Layout note: I tried using Masonry to make the posts stack better. Because there are so many pictures
+and they load slowly, it really screws up the whole page. Images overlap each other because they aren't
+loaded when the masonry layout fires, and if you repeatedly fire the layout method it makes the scroll
+position jump terribly.
