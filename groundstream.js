@@ -125,7 +125,6 @@ var runcount = 0;
 function groundstream_run(searchPlace) {
   if(DEBUG) console.log('run '+runcount++);
   groundstream_ui_show();
-  groundstream_ui_analytics(searchPlace);
 
   $GROUNDSTREAM_SEARCHBOX.val(searchPlace);
   if(DEBUG) console.log(searchPlace);

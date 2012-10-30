@@ -46,6 +46,7 @@
     // called to load a location from a ui element
     function ui_load_town(_this) {
       groundstream_load_town(_this);
+      groundstream_ui_analytics($(_this).html());
     }
     
     // keep track of various towns seen
