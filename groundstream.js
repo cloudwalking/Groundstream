@@ -320,7 +320,6 @@ function groundstream_render_tweet(tweet) {
     $(document.createElement('a')).attr('href',
         "https://twitter.com/intent/tweet?url=" + tweet.gs_url +
         "&hashtags=groundstream" +
-        "&text=RT " + tweet.from_user +": " + tweet.text +
         "&related=ground_stream,reed").append(
           $(document.createElement('span')).addClass('twitter-icon retweet')
     )
