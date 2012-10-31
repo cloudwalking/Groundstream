@@ -7,9 +7,8 @@ TODO:
 [X] Show tweet avatar
 [ ] Link to tweet
 [ ] Link to user
-[ ] "Restream" (post to twitter) button for individual post
+[X] "Restream" (post to twitter) button for individual post
 [X] Twitter favorite individual tweet
-[X] Twitter retweet
 [ ] /view page which embeds big image (MVP: iFrame)
 [ ] for each city, float favorited posts to the top
 
